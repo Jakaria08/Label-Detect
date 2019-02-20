@@ -1,3 +1,6 @@
+empty_site
+single_tank
+multiple_tank
 dog
 person
 cat

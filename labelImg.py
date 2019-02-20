@@ -196,11 +196,14 @@ class MainWindow(QMainWindow, WindowMixin):
 
         # Actions
         action = partial(newAction, self)
-        quit = action(getStr('quit'), self.close,
-                      'Ctrl+Q', 'quit', getStr('quitApp'))
+        quit = action(getStr('quit1'), self.close,
+                      'Ctrl+Q', 'quit1', getStr('quitApp'))
 
         open = action(getStr('openFile'), self.openFile,
                       'Ctrl+O', 'open', getStr('openFileDetail'))
+
+        openImage = action(getStr('openImageAndSlice'), self.openImageAndSlice,
+                      'Ctrl+i', 'open', getStr('openFileSlice'))
 
         opendir = action(getStr('openDir'), self.openDirDialog,
                          'Ctrl+u', 'open', getStr('openDir'))
@@ -333,7 +336,7 @@ class MainWindow(QMainWindow, WindowMixin):
                               fitWindow=fitWindow, fitWidth=fitWidth,
                               zoomActions=zoomActions,
                               fileMenuActions=(
-                                  open, opendir, save, saveAs, close, resetAll, quit),
+                                  open, openImage, opendir, save, saveAs, close, resetAll, quit),
                               beginner=(), advanced=(),
                               editMenu=(edit, copy, delete,
                                         None, color1, self.drawSquaresOption),
@@ -370,7 +373,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(self.menus.file,
-                   (open, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
+                   (open, openImage, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
         addActions(self.menus.help, (help, showInfo))
         addActions(self.menus.view, (
             self.autoSaving,
@@ -1266,6 +1269,18 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(filename)
 
     def openFile(self, _value=False):
+        if not self.mayContinue():
+            return
+        path = os.path.dirname(ustr(self.filePath)) if self.filePath else '.'
+        formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
+        filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose Image or Label file' % __appname__, path, filters)
+        if filename:
+            if isinstance(filename, (tuple, list)):
+                filename = filename[0]
+            self.loadFile(filename)
+
+    def openImageAndSlice(self, _value=False):
         if not self.mayContinue():
             return
         path = os.path.dirname(ustr(self.filePath)) if self.filePath else '.'
