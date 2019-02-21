@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import codecs
 import distutils.spawn
 import os.path
@@ -7,9 +8,13 @@ import platform
 import re
 import sys
 import subprocess
+import os
+import cv2
+import time
 
 from functools import partial
 from collections import defaultdict
+
 
 try:
     from PyQt5.QtGui import *
@@ -112,6 +117,11 @@ class MainWindow(QMainWindow, WindowMixin):
         self.itemsToShapes = {}
         self.shapesToItems = {}
         self.prevLabelText = ''
+
+        #some variables for image slicing
+        self.imageHeight = 0
+        self.imageWidth = 0
+        self.trainImagePath = ''
 
         listLayout = QVBoxLayout()
         listLayout.setContentsMargins(0, 0, 0, 0)
@@ -969,6 +979,9 @@ class MainWindow(QMainWindow, WindowMixin):
 
         # Make sure that filePath is a regular python string, rather than QString
         filePath = ustr(filePath)
+        #saving file path for slicing output
+        self.trainImagePath = filePath
+        print(filePath)
 
         unicodeFilePath = ustr(filePath)
         # Tzutalin 20160906 : Add file list and dock to move faster
@@ -1290,7 +1303,146 @@ class MainWindow(QMainWindow, WindowMixin):
         if filename:
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]
-            self.loadFile(filename)
+            isok = self.loadFile(filename)
+            if isok:
+                self.sliceDialog()
+
+    def sliceDialog(self):
+        self.getHeightX()
+        self.show()
+
+    def getHeightX(self):
+        HeightX, okPressed1 = QInputDialog.getInt(self, "Enter Image Height","Height:", 512, 0, 4096, 1)
+        if okPressed1:
+            print(HeightX)
+            self.imageHeight = HeightX
+            self.getWidthY()
+
+    def getWidthY(self):
+        WidthY, okPressed2 = QInputDialog.getInt(self, "Enter Image Width","Width:", 512, 0, 4096, 1)
+        if okPressed2:
+            print(WidthY)
+            self.imageWidth = WidthY
+            self.startslicing()
+
+    def startslicing(self):
+        buttonReply = QMessageBox.question(self, 'Attention', "Start Image Slicing Now?",
+                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if buttonReply == QMessageBox.Yes:
+            print('Yes clicked.')
+            head, tail = os.path.split(self.trainImagePath)
+            tail = os.path.splitext(tail)[0]
+            out_dir = os.path.join(head,tail)
+            print(head)
+            print(tail)
+            print(out_dir)
+            self.image = None
+            self.imageData = None
+            train_image_path = self.trainImagePath
+            print(train_image_path)
+            self.slice_im(train_image_path, tail, out_dir, self.imageHeight, self.imageWidth)
+        else:
+            print('No clicked.')
+
+        self.show()
+
+    def slice_im(self, train_image_path, out_name, out_dir, sliceHeight, sliceWidth,
+                 zero_frac_thresh=0.2, overlap=0.2, slice_sep='-',
+                 out_ext='.png', verbose=False):
+        '''Slice large satellite image into smaller pieces,
+        ignore slices with a percentage null greater then zero_frac_thresh
+        Assume three bands.
+        if out_ext == '', use input file extension for saving'''
+        print(train_image_path)
+        os.mkdir(out_dir)
+
+        image0 = cv2.imread(train_image_path, 1)  # color
+        if len(out_ext) == 0:
+            ext = '.' + image_path.split('.')[-1]
+        else:
+            ext = out_ext
+
+        win_h, win_w = image0.shape[:2]
+        print(win_h,win_w)
+
+        # if slice sizes are large than image, pad the edges
+        pad = 0
+        if sliceHeight > win_h:
+            pad = sliceHeight - win_h
+        if sliceWidth > win_w:
+            pad = max(pad, sliceWidth - win_w)
+        # pad the edge of the image with black pixels
+        if pad > 0:
+            border_color = (0,0,0)
+            image0 = cv2.copyMakeBorder(image0, pad, pad, pad, pad,
+                                     cv2.BORDER_CONSTANT, value=border_color)
+
+        win_size = sliceHeight*sliceWidth
+
+        t0 = time.time()
+        n_ims = 0
+        n_ims_nonull = 0
+        dx = int((1. - overlap) * sliceWidth)
+        dy = int((1. - overlap) * sliceHeight)
+
+        for y0 in range(0, image0.shape[0], dy):#sliceHeight):
+            for x0 in range(0, image0.shape[1], dx):#sliceWidth):
+                n_ims += 1
+
+                if (n_ims % 100) == 0:
+                    print (n_ims)
+
+                # make sure we don't have a tiny image on the edge
+                if y0+sliceHeight > image0.shape[0]:
+                    y = image0.shape[0] - sliceHeight
+                else:
+                    y = y0
+                if x0+sliceWidth > image0.shape[1]:
+                    x = image0.shape[1] - sliceWidth
+                else:
+                    x = x0
+
+                # extract image
+                window_c = image0[y:y + sliceHeight, x:x + sliceWidth]
+                # get black and white image
+                window = cv2.cvtColor(window_c, cv2.COLOR_BGR2GRAY)
+
+                # find threshold that's not black
+                # https://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_thresholding/py_thresholding.html?highlight=threshold
+                ret,thresh1 = cv2.threshold(window, 2, 255, cv2.THRESH_BINARY)
+                non_zero_counts = cv2.countNonZero(thresh1)
+                zero_counts = win_size - non_zero_counts
+                zero_frac = float(zero_counts) / win_size
+                #print "zero_frac", zero_fra
+                # skip if image is mostly empty
+                if zero_frac >= zero_frac_thresh:
+                    if verbose:
+                        print ("Zero frac too high at:", zero_frac)
+                    continue
+                # else save
+                else:
+                    #outpath = os.path.join(outdir, out_name + \
+                    #'|' + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
+                    #'_' + str(pad) + ext)
+                    outpath = os.path.join(out_dir, out_name + \
+                    slice_sep + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
+                    '_' + str(pad) + '_' + str(win_w) + '_' + str(win_h) + ext)
+
+                    #outpath = os.path.join(outdir, 'slice_' + out_name + \
+                    #'_' + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
+                    #'_' + str(pad) + '.jpg')
+
+                    if verbose:
+                        print ("outpath:", outpath)
+                    cv2.imwrite(outpath, window_c)
+                    n_ims_nonull += 1
+
+        print(outpath)
+        print ("Num slices:", n_ims, "Num non-null slices:", n_ims_nonull, \
+                "sliceHeight", sliceHeight, "sliceWidth", sliceWidth)
+        print ("Time to slice", train_image_path, time.time()-t0, "seconds")
+
+        return
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
