@@ -54,6 +54,21 @@ from libs.hashableQListWidgetItem import HashableQListWidgetItem
 
 __appname__ = 'labelImg'
 
+class ProgressBar(QProgressDialog):
+    def __init__(self, max, title):
+        super().__init__()
+        self.setMinimumDuration(0)
+        self.setWindowTitle(title)
+        self.setModal(True)
+
+        self.setValue(0)
+        self.setMinimum(0)
+        self.setMaximum(max)
+        self.setCancelButton(None)
+        self.setLabelText("Slicing in progress, Please Wait..")
+
+        self.show()
+
 class ImageSliceThread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
 
@@ -111,13 +126,22 @@ class ImageSliceThread(QThread):
 
         t0 = time.time()
         n_ims = 0
+        n_ims_for_progress = 0
         n_ims_nonull = 0
         dx = int((1. - overlap) * sliceWidth)
         dy = int((1. - overlap) * sliceHeight)
 
         for y0 in range(0, image0.shape[0], dy):#sliceHeight):
             for x0 in range(0, image0.shape[1], dx):#sliceWidth):
+                n_ims_for_progress += 1
+
+        for y0 in range(0, image0.shape[0], dy):#sliceHeight):
+            for x0 in range(0, image0.shape[1], dx):#sliceWidth):
                 n_ims += 1
+
+                progressbar = ProgressBar(n_ims_for_progress, title = "Slicing Images...")
+                time.sleep(0.1)
+                progressbar.setValue(n_ims)
 
                 if (n_ims % 100) == 0:
                     print (n_ims)
@@ -1478,6 +1502,10 @@ class MainWindow(QMainWindow, WindowMixin):
     def finished(self, result):
         if result:
             print('successfully sliced')
+            head, tail = os.path.split(self.trainImagePath)
+            tail = os.path.splitext(tail)[0]
+            out_dir = os.path.join(head,tail)
+            QMessageBox.about(self,'Message',f'Image Slicing Finished! \nOutput Directory = {out_dir}')
         else:
             print('Problem occured during slicing!')
 
