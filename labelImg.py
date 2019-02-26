@@ -11,6 +11,9 @@ import subprocess
 import os
 import cv2
 import time
+import glob
+import pandas as pd
+import xml.etree.ElementTree as ET
 
 from functools import partial
 from collections import defaultdict
@@ -68,6 +71,39 @@ class ProgressBar(QProgressDialog):
         self.setLabelText("Slicing in progress, Please Wait..")
 
         self.show()
+
+class XmlToTFrecordThread(QThread):
+    signal = pyqtSignal('PyQt_PyObject')
+
+    def __init__(self, xml_Path]):
+        QThread.__init__(self)
+        self.xmlPath = xml_Path
+
+    def run(self):
+        self.xml_to_csv()
+
+    def xml_to_csv(self):
+        xml_list = []
+        for xml_file in glob.glob(self.xmlPath + '/*.xml'):
+            tree = ET.parse(xml_file)
+            root = tree.getroot()
+            for member in root.findall('object'):
+                value = (root.find('filename').text,
+                        int(root.find('size')[0].text),
+                        int(root.find('size')[1].text),
+                        member[0].text,
+                        int(member[4][0].text),
+                        int(member[4][1].text),
+                        int(member[4][2].text),
+                        int(member[4][3].text)
+                        )
+                xml_list.append(value)
+        column_name = ['filename', 'width', 'height', 'class', 'xmin', 'ymin', 'xmax', 'ymax']
+        xml_df = pd.DataFrame(xml_list, columns=column_name)
+        #select a path to generate Field_labels
+        xml_df.to_csv(os.path.join(self.xmlPath,'Field_labels.csv'), index=None)
+        print('Successfully converted xml to csv.')
+
 
 class ImageSliceThread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
@@ -1506,8 +1542,15 @@ class MainWindow(QMainWindow, WindowMixin):
             tail = os.path.splitext(tail)[0]
             out_dir = os.path.join(head,tail)
             QMessageBox.about(self,'Message',f'Image Slicing Finished! \nOutput Directory = {out_dir}')
+            self.xmlTfrecordThread = XmlToTFrecordThread()
+            self.xmlTfrecordThread.signal.connect(self.finishedTF)
+            self.xmlTfrecordThread.start()
         else:
             print('Problem occured during slicing!')
+
+    def finishedTF(self, result):
+        if result:
+            print('successfully generated TFrecords')
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
