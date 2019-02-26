@@ -13,6 +13,7 @@ import cv2
 import time
 import glob
 import pandas as pd
+import numpy as np
 import xml.etree.ElementTree as ET
 
 from functools import partial
@@ -75,7 +76,7 @@ class ProgressBar(QProgressDialog):
 class XmlToTFrecordThread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
 
-    def __init__(self, xml_Path]):
+    def __init__(self, xml_Path):
         QThread.__init__(self)
         self.xmlPath = xml_Path
 
@@ -101,8 +102,47 @@ class XmlToTFrecordThread(QThread):
         column_name = ['filename', 'width', 'height', 'class', 'xmin', 'ymin', 'xmax', 'ymax']
         xml_df = pd.DataFrame(xml_list, columns=column_name)
         #select a path to generate Field_labels
-        xml_df.to_csv(os.path.join(self.xmlPath,'Field_labels.csv'), index=None)
+        new_path = os.path.join(self.xmlPath,'TFrecords')
+        if os.path.exists(new_path):
+            print('Directory Exists!')
+            return
+
+        os.mkdir(new_path)
+
+        xml_df.to_csv(os.path.join(new_path,'well_sites_labels.csv'), index=None)
         print('Successfully converted xml to csv.')
+        self.split_dataset()
+
+    def split_dataset(self):
+        np.random.seed(1)
+
+        new_path_split = os.path.join(self.xmlPath,'TFrecords')
+        full_labels = pd.read_csv(os.path.join(new_path_split, 'well_sites_labels.csv'))
+        grouped = full_labels.groupby('filename')
+
+        print(grouped.apply(lambda x: len(x)).value_counts())
+
+        gb = full_labels.groupby('filename')
+
+        grouped_list = [gb.get_group(x) for x in gb.groups]
+        print(len(grouped_list))
+        test_range = len(grouped_list)
+        train_size = int(test_range*0.8)
+
+        train_index = np.random.choice(len(grouped_list), size=train_size, replace=False)
+        test_index = np.setdiff1d(list(range(test_range)), train_index)
+
+        print(len(train_index), len(test_index))
+
+        # take first # files
+        train = pd.concat([grouped_list[i] for i in train_index])
+        test = pd.concat([grouped_list[i] for i in test_index])
+
+        print(len(train), len(test))
+
+        train.to_csv(os.path.join(new_path_split, 'train_images.csv'), index=None)
+        test.to_csv(os.path.join(new_path_split,'test_images.csv'), index=None)
+        print('Successfully splitted to train and test csv')
 
 
 class ImageSliceThread(QThread):
@@ -395,6 +435,9 @@ class MainWindow(QMainWindow, WindowMixin):
         openImage = action(getStr('openImageAndSlice'), self.openImageAndSlice,
                       'Ctrl+i', 'open', getStr('openFileSlice'))
 
+        createTFrecords = action(getStr('createTFrecord'), self.create_Tfrecord,
+                      'Ctrl+t', 'open', getStr('createTFrecord'))
+
         opendir = action(getStr('openDir'), self.openDirDialog,
                          'Ctrl+u', 'open', getStr('openDir'))
 
@@ -526,7 +569,7 @@ class MainWindow(QMainWindow, WindowMixin):
                               fitWindow=fitWindow, fitWidth=fitWidth,
                               zoomActions=zoomActions,
                               fileMenuActions=(
-                                  open, openImage, opendir, save, saveAs, close, resetAll, quit),
+                                  open, openImage, createTFrecords, opendir, save, saveAs, close, resetAll, quit),
                               beginner=(), advanced=(),
                               editMenu=(edit, copy, delete,
                                         None, color1, self.drawSquaresOption),
@@ -563,7 +606,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(self.menus.file,
-                   (open, openImage, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
+                   (open, openImage, createTFrecords, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
         addActions(self.menus.help, (help, showInfo))
         addActions(self.menus.view, (
             self.autoSaving,
@@ -1542,11 +1585,25 @@ class MainWindow(QMainWindow, WindowMixin):
             tail = os.path.splitext(tail)[0]
             out_dir = os.path.join(head,tail)
             QMessageBox.about(self,'Message',f'Image Slicing Finished! \nOutput Directory = {out_dir}')
-            self.xmlTfrecordThread = XmlToTFrecordThread()
-            self.xmlTfrecordThread.signal.connect(self.finishedTF)
-            self.xmlTfrecordThread.start()
         else:
             print('Problem occured during slicing!')
+
+    def create_Tfrecord(self, _value=False, dirpath=None):
+        if not self.mayContinue():
+            return
+
+        defaultOpenDirPath = dirpath if dirpath else '.'
+        if self.lastOpenDir and os.path.exists(self.lastOpenDir):
+            defaultOpenDirPath = self.lastOpenDir
+        else:
+            defaultOpenDirPath = os.path.dirname(self.filePath) if self.filePath else '.'
+
+        targetDirPath = ustr(QFileDialog.getExistingDirectory(self,
+                                                     '%s - Open Directory' % __appname__, defaultOpenDirPath,
+                                                     QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
+        self.xmlTfrecordThread = XmlToTFrecordThread(targetDirPath)
+        self.xmlTfrecordThread.signal.connect(self.finishedTF)
+        self.xmlTfrecordThread.start()
 
     def finishedTF(self, result):
         if result:
