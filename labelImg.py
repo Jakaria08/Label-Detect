@@ -37,6 +37,7 @@ except ImportError:
 
 import resources
 # Add internal libs
+import libs.generate_tfrecord as gtf
 from libs.constants import *
 from libs.utils import *
 from libs.settings import Settings
@@ -299,7 +300,7 @@ class MainWindow(QMainWindow, WindowMixin):
     def __init__(self, defaultFilename=None, defaultPrefdefClassFile=None, defaultSaveDir=None):
         super(MainWindow, self).__init__()
         self.setWindowTitle(__appname__)
-
+        gtf.test()
         # Load setting in the main thread
         self.settings = Settings()
         self.settings.load()
