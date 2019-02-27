@@ -8,7 +8,7 @@ import pandas as pd
 import tensorflow as tf
 
 from PIL import Image
-import libs.dataset_util
+import libs.dataset_util as dataset_util
 from collections import namedtuple, OrderedDict
 
 #flags = tf.app.flags
@@ -76,24 +76,20 @@ def create_tf_example(group, path):
     return tf_example
 
 
-def main_Tf(target_path):
+def main_Tf(target_path, record_file, images_csv):
     print(target_path)
-    path = os.getcwd()
-    writer = tf.python_io.TFRecordWriter('train.record')
+    writer = tf.python_io.TFRecordWriter(os.path.join(target_path, 'TFrecords', record_file))
 
-    examples = pd.read_csv('train_images.csv')
+    examples = pd.read_csv(os.path.join(target_path, 'TFrecords', images_csv))
     grouped = split(examples, 'filename')
 
-    os.chdir("..")
-    path = os.getcwd()
-
     for group in grouped:
-        tf_example = create_tf_example(group, path)
+        tf_example = create_tf_example(group, target_path)
         writer.write(tf_example.SerializeToString())
 
     writer.close()
     output_path = os.path.join(os.getcwd(), 'TFrecords')
-    print('Successfully created the TFRecords: {}'.format(output_path))
+    print('Successfully created the TFRecords: {}'.format(os.path.join(target_path, 'TFrecords')))
 
 def test():
     print('Working...')

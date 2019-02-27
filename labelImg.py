@@ -83,6 +83,7 @@ class XmlToTFrecordThread(QThread):
 
     def run(self):
         self.xml_to_csv()
+        self.signal.emit(self.xmlPath)
 
     def xml_to_csv(self):
         xml_list = []
@@ -144,6 +145,9 @@ class XmlToTFrecordThread(QThread):
         train.to_csv(os.path.join(new_path_split, 'train_images.csv'), index=None)
         test.to_csv(os.path.join(new_path_split,'test_images.csv'), index=None)
         print('Successfully splitted to train and test csv')
+
+        gtf.main_Tf(self.xmlPath, 'train.record', 'train_images.csv')
+        gtf.main_Tf(self.xmlPath, 'test.record', 'test_images.csv')
 
 
 class ImageSliceThread(QThread):
@@ -300,7 +304,6 @@ class MainWindow(QMainWindow, WindowMixin):
     def __init__(self, defaultFilename=None, defaultPrefdefClassFile=None, defaultSaveDir=None):
         super(MainWindow, self).__init__()
         self.setWindowTitle(__appname__)
-        gtf.test()
         # Load setting in the main thread
         self.settings = Settings()
         self.settings.load()
@@ -1606,9 +1609,11 @@ class MainWindow(QMainWindow, WindowMixin):
         self.xmlTfrecordThread.signal.connect(self.finishedTF)
         self.xmlTfrecordThread.start()
 
-    def finishedTF(self, result):
-        if result:
+    def finishedTF(self, tf_path):
+        if tf_path:
             print('successfully generated TFrecords')
+            final_path_tf = os.path.join(tf_path,'TFrecords')
+            QMessageBox.about(self,'Message',f'Train and Test Tfrecord file generated! \nOutput Directory = {final_path_tf}')
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
