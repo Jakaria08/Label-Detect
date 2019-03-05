@@ -279,6 +279,77 @@ class ImageSliceThread(QThread):
 
         return
 
+class InputWindowTest(QDialog):
+
+    def __init__(self):
+        super(InputWindowTest, self).__init__()
+        self.title = 'Enter slice dimension and select directory'
+        self.left = 10
+        self.top = 10
+        self.width = 500
+        self.height = 300
+        self.heightT = 0
+        self.widthT = 0
+        self.pathT = ''
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.labelheight = QLabel('Slice Height: ', self)
+        self.labelheight.move(20,20)
+        self.labelheight.resize(200,40)
+
+        self.textboxheight = QLineEdit(self)
+        self.textboxheight.move(220,20)
+        self.textboxheight.resize(200,40)
+
+        self.labelwidth = QLabel('Slice Width: ', self)
+        self.labelwidth.move(20,80)
+        self.labelwidth.resize(200,40)
+
+        self.textboxWidth = QLineEdit(self)
+        self.textboxWidth.move(220,80)
+        self.textboxWidth.resize(200,40)
+
+        self.labelpath = QLabel('Image Path: ', self)
+        self.labelpath.move(20,140)
+        self.labelpath.resize(200,40)
+
+        self.textboxhPath = QLineEdit(self)
+        self.textboxhPath.move(220,140)
+        self.textboxhPath.resize(200,40)
+
+        #self.button = QPushButton('Submit', self)
+        #self.button.move(220, 200)
+        #self.button.clicked.connect(self.on_click)
+
+
+        self.dialogbutton = QDialogButtonBox(self)
+        self.dialogbutton.move(220, 200)
+        self.dialogbutton.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+
+        self.dialogbutton.accepted.connect(self.accept)
+        self.dialogbutton.rejected.connect(self.reject)
+
+        self.show()
+
+    def accept(self):
+        self.heightT = int(self.textboxheight.text())
+        self.widthT = int(self.textboxWidth.text())
+        self.pathT = self.textboxhPath.text()
+
+        super().accept()
+
+
+    @pyqtSlot()
+    def on_click(self):
+        self.heightT = int(self.textboxheight.text())
+        self.widthT = int(self.textboxWidth.text())
+        self.pathT = self.textboxhPath.text()
+        self.close()
+
 class WindowMixin(object):
 
     def menu(self, title, actions=None):
@@ -442,6 +513,9 @@ class MainWindow(QMainWindow, WindowMixin):
         createTFrecords = action(getStr('createTFrecord'), self.create_Tfrecord,
                       'Ctrl+t', 'open', getStr('createTFrecord'))
 
+        loadTestResult = action(getStr('loadTestResults'), self.load_Test_Results,
+                      'Ctrl+Shift+t', 'open', getStr('loadTestResults'))
+
         opendir = action(getStr('openDir'), self.openDirDialog,
                          'Ctrl+u', 'open', getStr('openDir'))
 
@@ -573,7 +647,7 @@ class MainWindow(QMainWindow, WindowMixin):
                               fitWindow=fitWindow, fitWidth=fitWidth,
                               zoomActions=zoomActions,
                               fileMenuActions=(
-                                  open, openImage, createTFrecords, opendir, save, saveAs, close, resetAll, quit),
+                                  open, openImage, createTFrecords, loadTestResult, opendir, save, saveAs, close, resetAll, quit),
                               beginner=(), advanced=(),
                               editMenu=(edit, copy, delete,
                                         None, color1, self.drawSquaresOption),
@@ -610,7 +684,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(self.menus.file,
-                   (open, openImage, createTFrecords, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
+                   (open, openImage, createTFrecords, loadTestResult, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
         addActions(self.menus.help, (help, showInfo))
         addActions(self.menus.view, (
             self.autoSaving,
@@ -1614,6 +1688,13 @@ class MainWindow(QMainWindow, WindowMixin):
             print('successfully generated TFrecords')
             final_path_tf = os.path.join(tf_path,'TFrecords')
             QMessageBox.about(self,'Message',f'Train and Test Tfrecord file generated! \nOutput Directory = {final_path_tf}')
+
+    def load_Test_Results(self):
+        self.test_values = InputWindowTest()
+        if self.test_values.exec_():
+            print(self.test_values.heightT)
+            print(self.test_values.widthT)
+            print(self.test_values.pathT)
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
