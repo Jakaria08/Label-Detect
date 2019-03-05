@@ -284,10 +284,10 @@ class InputWindowTest(QDialog):
     def __init__(self):
         super(InputWindowTest, self).__init__()
         self.title = 'Enter slice dimension and select directory'
-        self.left = 10
-        self.top = 10
-        self.width = 500
-        self.height = 300
+        self.left = 500
+        self.top = 300
+        self.width = 400
+        self.height = 250
         self.heightT = 0
         self.widthT = 0
         self.pathT = ''
@@ -299,27 +299,27 @@ class InputWindowTest(QDialog):
 
         self.labelheight = QLabel('Slice Height: ', self)
         self.labelheight.move(20,20)
-        self.labelheight.resize(200,40)
+        self.labelheight.resize(150,40)
 
         self.textboxheight = QLineEdit(self)
-        self.textboxheight.move(220,20)
-        self.textboxheight.resize(200,40)
+        self.textboxheight.move(150,20)
+        self.textboxheight.resize(150,30)
 
         self.labelwidth = QLabel('Slice Width: ', self)
         self.labelwidth.move(20,80)
-        self.labelwidth.resize(200,40)
+        self.labelwidth.resize(150,40)
 
         self.textboxWidth = QLineEdit(self)
-        self.textboxWidth.move(220,80)
-        self.textboxWidth.resize(200,40)
+        self.textboxWidth.move(150,80)
+        self.textboxWidth.resize(150,30)
 
         self.labelpath = QLabel('Image Path: ', self)
         self.labelpath.move(20,140)
-        self.labelpath.resize(200,40)
+        self.labelpath.resize(150,40)
 
         self.textboxhPath = QLineEdit(self)
-        self.textboxhPath.move(220,140)
-        self.textboxhPath.resize(200,40)
+        self.textboxhPath.move(150,140)
+        self.textboxhPath.resize(150,30)
 
         #self.button = QPushButton('Submit', self)
         #self.button.move(220, 200)
@@ -327,7 +327,7 @@ class InputWindowTest(QDialog):
 
 
         self.dialogbutton = QDialogButtonBox(self)
-        self.dialogbutton.move(220, 200)
+        self.dialogbutton.move(150, 200)
         self.dialogbutton.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 
         self.dialogbutton.accepted.connect(self.accept)
@@ -1689,12 +1689,23 @@ class MainWindow(QMainWindow, WindowMixin):
             final_path_tf = os.path.join(tf_path,'TFrecords')
             QMessageBox.about(self,'Message',f'Train and Test Tfrecord file generated! \nOutput Directory = {final_path_tf}')
 
-    def load_Test_Results(self):
-        self.test_values = InputWindowTest()
-        if self.test_values.exec_():
-            print(self.test_values.heightT)
-            print(self.test_values.widthT)
-            print(self.test_values.pathT)
+    def load_Test_Results(self, _value=False):
+        if not self.mayContinue():
+            return
+        path = os.path.dirname(ustr(self.filePath)) if self.filePath else '.'
+        formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
+        filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose Image or Label file' % __appname__, path, filters)
+        if filename:
+            if isinstance(filename, (tuple, list)):
+                filename = filename[0]
+            isok = self.loadFile(filename)
+            if isok:
+                self.test_values = InputWindowTest()
+                if self.test_values.exec_():
+                    print(self.test_values.heightT)
+                    print(self.test_values.widthT)
+                    print(self.test_values.pathT)
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
