@@ -299,41 +299,53 @@ class InputWindowTest(QDialog):
 
         self.labelheight = QLabel('Slice Height: ', self)
         self.labelheight.move(20,20)
-        self.labelheight.resize(150,40)
+        self.labelheight.resize(130,40)
 
         self.textboxheight = QLineEdit(self)
-        self.textboxheight.move(150,20)
-        self.textboxheight.resize(150,30)
+        self.textboxheight.move(130,20)
+        self.textboxheight.resize(130,30)
+        self.textboxheight.setText('512')
 
         self.labelwidth = QLabel('Slice Width: ', self)
         self.labelwidth.move(20,80)
-        self.labelwidth.resize(150,40)
+        self.labelwidth.resize(130,40)
 
         self.textboxWidth = QLineEdit(self)
-        self.textboxWidth.move(150,80)
-        self.textboxWidth.resize(150,30)
+        self.textboxWidth.move(130,80)
+        self.textboxWidth.resize(130,30)
+        self.textboxWidth.setText('512')
 
-        self.labelpath = QLabel('Image Path: ', self)
+        self.labelpath = QLabel('Model Path: ', self)
         self.labelpath.move(20,140)
-        self.labelpath.resize(150,40)
+        self.labelpath.resize(130,40)
 
         self.textboxhPath = QLineEdit(self)
-        self.textboxhPath.move(150,140)
-        self.textboxhPath.resize(150,30)
+        self.textboxhPath.move(130,140)
+        self.textboxhPath.resize(130,30)
 
-        #self.button = QPushButton('Submit', self)
-        #self.button.move(220, 200)
-        #self.button.clicked.connect(self.on_click)
+        self.button = QPushButton('Select Model Path', self)
+        self.button.move(270, 143)
+        self.button.clicked.connect(self.on_click)
 
 
         self.dialogbutton = QDialogButtonBox(self)
-        self.dialogbutton.move(150, 200)
+        self.dialogbutton.move(130, 200)
         self.dialogbutton.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 
         self.dialogbutton.accepted.connect(self.accept)
         self.dialogbutton.rejected.connect(self.reject)
 
         self.show()
+
+    def get_file_name(self, _value=False):
+        path = '.'
+        formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
+        filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose Model file' % __appname__, path, filters)
+        if filename:
+            if isinstance(filename, (tuple, list)):
+                filename = filename[0]
+                self.textboxhPath.setText(filename)
 
     def accept(self):
         self.heightT = int(self.textboxheight.text())
@@ -342,13 +354,8 @@ class InputWindowTest(QDialog):
 
         super().accept()
 
-
-    @pyqtSlot()
     def on_click(self):
-        self.heightT = int(self.textboxheight.text())
-        self.widthT = int(self.textboxWidth.text())
-        self.pathT = self.textboxhPath.text()
-        self.close()
+        self.get_file_name()
 
 class WindowMixin(object):
 
@@ -1679,9 +1686,11 @@ class MainWindow(QMainWindow, WindowMixin):
         targetDirPath = ustr(QFileDialog.getExistingDirectory(self,
                                                      '%s - Open Directory' % __appname__, defaultOpenDirPath,
                                                      QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
-        self.xmlTfrecordThread = XmlToTFrecordThread(targetDirPath)
-        self.xmlTfrecordThread.signal.connect(self.finishedTF)
-        self.xmlTfrecordThread.start()
+
+        if targetDirPath:
+            self.xmlTfrecordThread = XmlToTFrecordThread(targetDirPath)
+            self.xmlTfrecordThread.signal.connect(self.finishedTF)
+            self.xmlTfrecordThread.start()
 
     def finishedTF(self, tf_path):
         if tf_path:
@@ -1695,7 +1704,7 @@ class MainWindow(QMainWindow, WindowMixin):
         path = os.path.dirname(ustr(self.filePath)) if self.filePath else '.'
         formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
         filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
-        filename = QFileDialog.getOpenFileName(self, '%s - Choose Image or Label file' % __appname__, path, filters)
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose Image file' % __appname__, path, filters)
         if filename:
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]
