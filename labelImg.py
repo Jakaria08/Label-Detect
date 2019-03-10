@@ -37,6 +37,7 @@ except ImportError:
 
 import resources
 # Add internal libs
+import testing.testing as testing
 import libs.generate_tfrecord as gtf
 from libs.constants import *
 from libs.utils import *
@@ -58,6 +59,34 @@ from libs.version import __version__
 from libs.hashableQListWidgetItem import HashableQListWidgetItem
 
 __appname__ = 'labelImg'
+
+class TestingThread(QThread):
+    signal = pyqtSignal('PyQt_PyObject')
+
+    def __init__(self, test_image_path, test_output_name,
+                 test_output_dir, test_height, test_width,
+                 test_model_path):
+        QThread.__init__(self)
+        self.testImagePath = test_image_path
+        self.testOutputName = test_output_name
+        self.testOutputDir = test_output_dir
+        self.testHeight = test_height
+        self.testWidth = test_width
+        self.modelPath = test_model_path
+        #print(f"test image path: {self.testImagePath}")
+        #print(f"Output name: {self.testOutputName}")
+        #print(f"Output dir: {self.testOutputDir}")
+        #print(f"Image height: {self.testHeight}")
+        #print(f"Image Width: {self.testWidth}")
+        #print(f"Model path: {self.modelPath}")
+
+    def run(self):
+        self.runAll()
+
+    def runAll(self):
+        testing.Testing(self.testImagePath, self.testOutputName, self.testOutputDir,
+                        self.testHeight, self.testWidth, self.modelPath)
+        self.signal.emit(self.testOutputDir)
 
 class ProgressBar(QProgressDialog):
     def __init__(self, max, title):
@@ -216,12 +245,13 @@ class ImageSliceThread(QThread):
             for x0 in range(0, image0.shape[1], dx):#sliceWidth):
                 n_ims_for_progress += 1
 
+        progressbar = ProgressBar(n_ims_for_progress, title = "Slicing Images...")
+
         for y0 in range(0, image0.shape[0], dy):#sliceHeight):
             for x0 in range(0, image0.shape[1], dx):#sliceWidth):
                 n_ims += 1
 
-                progressbar = ProgressBar(n_ims_for_progress, title = "Slicing Images...")
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 progressbar.setValue(n_ims)
 
                 if (n_ims % 100) == 0:
@@ -1705,6 +1735,11 @@ class MainWindow(QMainWindow, WindowMixin):
         formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
         filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
         filename = QFileDialog.getOpenFileName(self, '%s - Choose Image file' % __appname__, path, filters)
+
+        head, tail = os.path.split(filename[0])
+        tail = os.path.splitext(tail)[0]
+        out_dir = os.path.join(head,tail)
+
         if filename:
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]
@@ -1712,9 +1747,24 @@ class MainWindow(QMainWindow, WindowMixin):
             if isok:
                 self.test_values = InputWindowTest()
                 if self.test_values.exec_():
-                    print(self.test_values.heightT)
-                    print(self.test_values.widthT)
-                    print(self.test_values.pathT)
+                    #print(self.test_values.heightT)
+                    #print(self.test_values.widthT)
+                    #print(self.test_values.pathT)
+                    #print(filename)
+                    #print(tail)
+                    #print(out_dir)
+
+                    self.testThread = TestingThread(filename, tail, out_dir,
+                                                 self.test_values.heightT,
+                                                 self.test_values.widthT,
+                                                 self.test_values.pathT)
+                    self.testThread.signal.connect(self.finishedTest)
+                    self.testThread.start()
+
+    def finishedTest(self, test_out_dir):
+        if test_out_dir:
+            print('successfully generated test results')
+            print(test_out_dir)
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
