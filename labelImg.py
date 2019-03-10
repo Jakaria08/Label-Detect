@@ -79,7 +79,7 @@ class TestingThread(QThread):
         #print(f"Image height: {self.testHeight}")
         #print(f"Image Width: {self.testWidth}")
         #print(f"Model path: {self.modelPath}")
-
+        #
     def run(self):
         self.runAll()
 
