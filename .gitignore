@@ -1,5 +1,7 @@
 resources/icons/.DS_Store
 
+testing/FRCNN_frozen_inference_graph/frozen_inference_graph.pb
+
 resources.py
 
 .idea*
