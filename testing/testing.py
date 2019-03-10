@@ -196,7 +196,7 @@ class Testing:
                 "sliceHeight", sliceHeight, "sliceWidth", sliceWidth)
         print ("Time to slice", test_image_path, time.time()-t0, "seconds")
 
-        return
+        self.start_detecting()
 
     def start_detecting(self):
         detection_graph = tf.Graph()
