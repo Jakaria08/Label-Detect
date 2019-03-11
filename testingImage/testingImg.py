@@ -249,7 +249,8 @@ class Testing:
                     boxs = np.squeeze(boxes)
                     scors = np.squeeze(scores)
                     #finding global co-ordinate
-                    box_co = self.outpath[i].split('_')
+                    outp = os.path.basename(self.outpath[i])
+                    box_co = outp.split('_')
                     x_co = float(box_co[3])
                     y_co = float(box_co[2].split('-')[1])
 
