@@ -369,9 +369,7 @@ class InputWindowTest(QDialog):
 
     def get_file_name(self, _value=False):
         path = '.'
-        formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
-        filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
-        filename = QFileDialog.getOpenFileName(self, '%s - Choose Model file' % __appname__, path, filters)
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose Model file' % __appname__, path)
         if filename:
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]

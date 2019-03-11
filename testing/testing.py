@@ -47,7 +47,7 @@ class ProgressBar(QProgressDialog):
         self.setMinimum(0)
         self.setMaximum(max)
         self.setCancelButton(None)
-        self.setLabelText("Slicing in progress, Please Wait..")
+        self.setLabelText("Work in progress, Please Wait..")
 
         self.show()
 
@@ -63,7 +63,7 @@ class Testing:
         self.im_width = test_width
         self.PATH_TO_FROZEN_GRAPH = test_model_path
         self.TEST_IMAGES_DIR = test_output_dir
-        self.outpath = ''
+        self.outpath = list()
 
         print(f"test image path: {self.testImagePath}")
         print(f"Output name: {self.testOutputName}")
@@ -178,20 +178,24 @@ class Testing:
                     #self.outpath = os.path.join(outdir, out_name + \
                     #'|' + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
                     #'_' + str(pad) + ext)
-                    self.outpath = os.path.join(out_dir, out_name + \
+                    outpaths = os.path.join(out_dir, out_name + \
                     slice_sep + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
                     '_' + str(pad) + '_' + str(win_w) + '_' + str(win_h) + ext)
+
+                    self.outpath.append(os.path.join(out_dir, out_name + \
+                    slice_sep + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
+                    '_' + str(pad) + '_' + str(win_w) + '_' + str(win_h) + ext))
 
                 #self.outpath = os.path.join(outdir, 'slice_' + out_name + \
                 #'_' + str(y) + '_' + str(x) + '_' + str(sliceHeight) + '_' + str(sliceWidth) +\
                 #'_' + str(pad) + '.jpg')
 
                     if verbose:
-                        print ("outpath:", self.outpath)
-                    cv2.imwrite(self.outpath, window_c)
+                        print ("outpaths:", outpaths)
+                    cv2.imwrite(outpaths, window_c)
                     n_ims_nonull += 1
 
-        print(self.outpath)
+        print(self.outpath[0])
         print ("Num slices:", n_ims, "Num non-null slices:", n_ims_nonull, \
                 "sliceHeight", sliceHeight, "sliceWidth", sliceWidth)
         print ("Time to slice", test_image_path, time.time()-t0, "seconds")
@@ -221,6 +225,9 @@ class Testing:
                 start_time = time.time()
                 new_global_boxes = [list() for f in range(len(self.outpath))]
                 new_global_boxes_sup = list()
+
+                path_size = len(self.outpath)
+                progressbar = ProgressBar(path_size, title = "Detecting...")
 
                 for i in range(len(self.outpath)):
                     image = Image.open(os.path.join(self.TEST_IMAGES_DIR, self.outpath[i]))
@@ -261,6 +268,8 @@ class Testing:
                             #new_global_boxes[i].append([ymin, xmin, ymax, xmax])
                             new_global_boxes_sup.append([ymin, xmin, ymax, xmax])
 
+                    #time.sleep(0.1)
+                    progressbar.setValue(i)
 
                 print('Total testing time after evaluating %d images : %.3f sec'%(i, time.time()-start_time))
 
