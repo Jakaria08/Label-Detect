@@ -338,10 +338,10 @@ class Testing:
 
     def save_box(self, all_boxes):
         print(self.testOutputDir)
-        if os.path.exists(self.testOutputDir):
+        test_out_directory = os.path.join(self.testOutputDir, "boxCSV")
+        if os.path.exists(test_out_directory):
             print('Directory Exists!')
             return
-        test_out_directory = os.path.join(self.testOutputDir, "boxCSV")
         os.mkdir(test_out_directory)
         np.savetxt(os.path.join(test_out_directory, "all_boxes.csv"), all_boxes, delimiter=",")
         np.savetxt(os.path.join(test_out_directory, "all_boxes_dec.csv"), all_boxes, fmt="%d", delimiter=",")
