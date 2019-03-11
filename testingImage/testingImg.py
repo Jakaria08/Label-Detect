@@ -253,7 +253,7 @@ class Testing:
                     box_co = outp.split('_')
                     length = len(box_co)
 
-                    x_co = float(box_co[lenght - 6])
+                    x_co = float(box_co[length - 6])
                     y_co = float(box_co[length - 7].split('-')[1])
 
                     for j in range(boxs.shape[0]):
