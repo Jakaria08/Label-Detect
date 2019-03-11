@@ -8,7 +8,6 @@ import tensorflow as tf
 import zipfile
 import cv2
 import time
-import labelImg
 
 from tensorflow.python.client import timeline
 from distutils.version import StrictVersion
@@ -200,7 +199,7 @@ class Testing:
                 "sliceHeight", sliceHeight, "sliceWidth", sliceWidth)
         print ("Time to slice", test_image_path, time.time()-t0, "seconds")
 
-        self.start_detecting()
+        #self.start_detecting()
 
     def start_detecting(self):
         detection_graph = tf.Graph()
