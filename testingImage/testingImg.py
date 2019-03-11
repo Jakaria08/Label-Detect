@@ -251,8 +251,10 @@ class Testing:
                     #finding global co-ordinate
                     outp = os.path.basename(self.outpath[i])
                     box_co = outp.split('_')
-                    x_co = float(box_co[3])
-                    y_co = float(box_co[2].split('-')[1])
+                    length = len(box_co)
+
+                    x_co = float(box_co[lenght - 6])
+                    y_co = float(box_co[length - 7].split('-')[1])
 
                     for j in range(boxs.shape[0]):
                         if scors is None or scors[j] > 0.5:
