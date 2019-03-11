@@ -37,7 +37,7 @@ except ImportError:
 
 import resources
 # Add internal libs
-import testing.testing as testing
+import testingImage.testingImg as testing
 import libs.generate_tfrecord as gtf
 from libs.constants import *
 from libs.utils import *
