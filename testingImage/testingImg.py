@@ -262,10 +262,10 @@ class Testing:
 
                             ymin, xmin, ymax, xmax = box
 
-                            ymin = y_co + (ymin*im_height)
-                            xmin = x_co + (xmin*im_width)
-                            ymax = y_co + (ymax*im_height)
-                            xmax = x_co + (xmax*im_width)
+                            ymin = y_co + (ymin*self.im_height)
+                            xmin = x_co + (xmin*self.im_width)
+                            ymax = y_co + (ymax*self.im_height)
+                            xmax = x_co + (xmax*self.im_width)
 
                             #new_global_boxes[i].append([ymin, xmin, ymax, xmax])
                             new_global_boxes_sup.append([ymin, xmin, ymax, xmax])
