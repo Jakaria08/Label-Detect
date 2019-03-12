@@ -86,7 +86,7 @@ class TestingThread(QThread):
     def runAll(self):
         testing.Testing(self.testImagePath, self.testOutputName, self.testOutputDir,
                         self.testHeight, self.testWidth, self.modelPath)
-        self.signal.emit(self.testOutputDir)
+        self.signal.emit(self.testOutputDir, self.testImagePath)
 
 class ProgressBar(QProgressDialog):
     def __init__(self, max, title):
@@ -1759,10 +1759,31 @@ class MainWindow(QMainWindow, WindowMixin):
                     self.testThread.signal.connect(self.finishedTest)
                     self.testThread.start()
 
-    def finishedTest(self, test_out_dir):
+    def finishedTest(self, test_out_dir, test_img_path):
         if test_out_dir:
             print('successfully generated test results')
-            print(test_out_dir)
+
+            test_out_file = os.path.join(test_out_dir, "boxCSV", 'single_boxes.csv')
+            my_data = np.genfromtxt(test_out_file, delimiter=',')
+            single_boxes = my_data.astype(int)
+            img = cv2.imread(test_img_path, 1)
+
+            size = len(single_boxes[0])
+            progressbar = ProgressBar(size, title = "Plotting...")
+            progressbar.setValue(0)
+
+            for i in range(single_boxes.shape[0]):
+                y1,x1,y2,x2 = single_boxes[i]
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,0), 4)
+                print(i)
+                progressbar.setValue(i)
+
+            head, tail = os.path.split(test_img_path)
+            cv2.imwrite(os.path.join(head, "plotted.png"),img)
+
+            print('successfully plotted the results')
+            self.loadFile(filename)
+            QMessageBox.about(self,'Message',f'Result Plotted on the Image!')
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):

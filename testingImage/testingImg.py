@@ -227,6 +227,7 @@ class Testing:
 
                 path_size = len(self.outpath)
                 progressbar = ProgressBar(path_size, title = "Detecting...")
+                progressbar.setValue(0)
 
                 for i in range(len(self.outpath)):
                     image = Image.open(os.path.join(self.TEST_IMAGES_DIR, self.outpath[i]))
