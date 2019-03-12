@@ -133,7 +133,7 @@ class Testing:
                 n_ims_for_progress += 1
 
         progressbar = ProgressBar(n_ims_for_progress, title = "Slicing Images...")
-
+        print("Where is the error??????")
         for y0 in range(0, image0.shape[0], dy):#sliceHeight):
             for x0 in range(0, image0.shape[1], dx):#sliceWidth):
                 n_ims += 1
