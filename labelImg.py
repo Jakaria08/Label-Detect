@@ -99,7 +99,7 @@ class ProgressBar(QProgressDialog):
         self.setMinimum(0)
         self.setMaximum(max)
         self.setCancelButton(None)
-        self.setLabelText("Slicing in progress, Please Wait..")
+        self.setLabelText("Work in progress, Please Wait..")
 
         self.show()
 
