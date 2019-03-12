@@ -137,7 +137,7 @@ class Testing:
         for y0 in range(0, image0.shape[0], dy):#sliceHeight):
             for x0 in range(0, image0.shape[1], dx):#sliceWidth):
                 n_ims += 1
-
+                print(" within the main loop {n_ims}")
 
                 #time.sleep(0.1)
                 progressbar.setValue(n_ims)
@@ -154,7 +154,7 @@ class Testing:
                     x = image0.shape[1] - sliceWidth
                 else:
                     x = x0
-
+                print(" within the main loop before extraction {n_ims}")
                 # extract image
                 window_c = image0[y:y + sliceHeight, x:x + sliceWidth]
                 # get black and white image
@@ -168,6 +168,7 @@ class Testing:
                 zero_frac = float(zero_counts) / win_size
                 #print "zero_frac", zero_fra
                 # skip if image is mostly empty
+                print(" within the main loop before if {n_ims}")
                 if zero_frac >= zero_frac_thresh:
                     if verbose:
                         print ("Zero frac too high at:", zero_frac)
@@ -191,6 +192,7 @@ class Testing:
 
                     if verbose:
                         print ("outpaths:", outpaths)
+                    print(" within the main loop before img write{n_ims}")
                     cv2.imwrite(outpaths, window_c)
                     n_ims_nonull += 1
 
@@ -348,4 +350,4 @@ class Testing:
         np.savetxt(os.path.join(test_out_directory, "all_boxes_dec.csv"), all_boxes, fmt="%d", delimiter=",")
         single_boxes = self.non_max_suppression_fast(all_boxes, 0.1)
         print(single_boxes[10])
-        np.savetxt(os.path.join(test_out_directory, "single_boxes.csv"), all_boxes, fmt="%d", delimiter=",")
+        np.savetxt(os.path.join(test_out_directory, "single_boxes.csv"), single_boxes, fmt="%d", delimiter=",")

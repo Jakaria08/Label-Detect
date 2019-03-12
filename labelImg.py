@@ -1782,7 +1782,7 @@ class MainWindow(QMainWindow, WindowMixin):
             cv2.imwrite(os.path.join(head, "plotted.png"),img)
 
             print('successfully plotted the results')
-            self.loadFile(filename)
+            self.loadFile(os.path.join(head, "plotted.png"))
             QMessageBox.about(self,'Message',f'Result Plotted on the Image!')
 
     def saveFile(self, _value=False):
