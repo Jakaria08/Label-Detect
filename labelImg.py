@@ -61,7 +61,7 @@ from libs.hashableQListWidgetItem import HashableQListWidgetItem
 __appname__ = 'labelImg'
 
 class TestingThread(QThread):
-    signal = pyqtSignal('PyQt_PyObject')
+    signal = pyqtSignal('PyQt_PyObject', 'PyQt_PyObject')
 
     def __init__(self, test_image_path, test_output_name,
                  test_output_dir, test_height, test_width,
