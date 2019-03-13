@@ -1781,7 +1781,7 @@ class MainWindow(QMainWindow, WindowMixin):
             head, tail = os.path.split(test_img_path)
             cv2.imwrite(os.path.join(head, "plotted.png"),img)
 
-            print('successfully plotted the results')
+            print('successfully plotted the results!')
             self.loadFile(os.path.join(head, "plotted.png"))
             QMessageBox.about(self,'Message',f'Result Plotted on the Image!')
 
