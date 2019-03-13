@@ -60,6 +60,13 @@ from libs.hashableQListWidgetItem import HashableQListWidgetItem
 
 __appname__ = 'labelImg'
 
+class EmittingStream(QObject):
+
+    textWritten = pyqtSignal(str)
+
+    def write(self, text):
+        self.textWritten.emit(str(text))
+
 class TrainingThread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
 
@@ -68,13 +75,12 @@ class TrainingThread(QThread):
         self.Tf_training = tf_training
         self.pbtxt_training = pbtxt_file
         self.pre_model_training = model_train
-
+        self.nwindow = ConsoleWindow()
         print(self.Tf_training)
         print(self.pbtxt_training)
         print(self.pre_model_training)
 
     def run(self):
-
         self.signal.emit(self.pre_model_training)
 
 
@@ -327,6 +333,37 @@ class ImageSliceThread(QThread):
 
         return
 
+class ConsoleWindow(QDialog):
+
+    def __init__(self):
+        super(ConsoleWindow, self).__init__()
+        self.title = 'Training...'
+        self.left = 500
+        self.top = 300
+        self.width = 500
+        self.height = 400
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.textEdit = QPlainTextEdit()
+        self.textEdit.move(1, 1)
+        self.textEdit.resize(498, 398)
+        self.textEdit.setPlainText("WHY...")
+        sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
+
+        self.show()
+
+    def normalOutputWritten(self, text):
+        """Append text to the QTextEdit."""
+        # Maybe QTextEdit.append() works as well, but this is how I do it:
+        cursor = self.textEdit.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        cursor.insertText(text)
+        self.textEdit.setTextCursor(cursor)
+        self.textEdit.ensureCursorVisible()
+
 class InputWindowTrain(QDialog):
 
     def __init__(self):
@@ -365,7 +402,7 @@ class InputWindowTrain(QDialog):
         self.textboxpbtxt.move(130,80)
         self.textboxpbtxt.resize(130,30)
 
-        self.buttonpbtxt = QPushButton('Select TF_Record', self)
+        self.buttonpbtxt = QPushButton('Select .pbtxt', self)
         self.buttonpbtxt.move(270, 83)
         self.buttonpbtxt.clicked.connect(self.on_click_pbtxt)
 
