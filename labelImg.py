@@ -309,6 +309,94 @@ class ImageSliceThread(QThread):
 
         return
 
+class InputWindowTrain(QDialog):
+
+    def __init__(self):
+        super(InputWindowTrain, self).__init__()
+        self.title = 'Select the paths for training'
+        self.left = 500
+        self.top = 300
+        self.width = 400
+        self.height = 250
+        self.Tf_train = ''
+        self.pbtxt_train = ''
+        self.pre_model_train = ''
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.labelTF_Record = QLabel('TF_Record File: ', self)
+        self.labelTF_Record.move(20,20)
+        self.labelTF_Record.resize(130,40)
+
+        self.textboxTF_Record = QLineEdit(self)
+        self.textboxTF_Record.move(130,20)
+        self.textboxTF_Record.resize(130,30)
+
+        self.buttonTF_Record = QPushButton('Select TF_Record', self)
+        self.buttonTF_Record.move(270, 23)
+        self.buttonTF_Record.clicked.connect(self.on_click_TF)
+
+        self.labelpbtxt = QLabel('.pbtxt File: ', self)
+        self.labelpbtxt.move(20,80)
+        self.labelpbtxt.resize(130,40)
+
+        self.textboxpbtxt = QLineEdit(self)
+        self.textboxpbtxt.move(130,80)
+        self.textboxpbtxt.resize(130,30)
+
+        self.buttonpbtxt = QPushButton('Select TF_Record', self)
+        self.buttonpbtxt.move(270, 83)
+        self.buttonpbtxt.clicked.connect(self.on_click_pbtxt)
+
+        self.labelModel = QLabel('Model Path: ', self)
+        self.labelModel.move(20,140)
+        self.labelModel.resize(130,40)
+
+        self.textboxhModel = QLineEdit(self)
+        self.textboxhModel.move(130,140)
+        self.textboxhModel.resize(130,30)
+
+        self.buttonModel = QPushButton('Select Model Path', self)
+        self.buttonModel.move(270, 143)
+        self.buttonModel.clicked.connect(self.on_click_model)
+
+        self.dialogbutton = QDialogButtonBox(self)
+        self.dialogbutton.move(130, 200)
+        self.dialogbutton.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+
+        self.dialogbutton.accepted.connect(self.accept)
+        self.dialogbutton.rejected.connect(self.reject)
+
+        self.show()
+
+    def get_file_name(self, text_box, _value=False):
+        path = '.'
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose Model file' % __appname__, path)
+        if filename:
+            if isinstance(filename, (tuple, list)):
+                filename = filename[0]
+                self.text_box.setText(filename)
+
+    def accept(self):
+        self.Tf_train = int(self.textboxTF_Record.text())
+        self.pbtxt_train = int(self.textboxpbtxt.text())
+        self.pre_model_train = self.textboxhModel.text()
+
+        super().accept()
+
+    def on_click_TF(self):
+        self.get_file_name(self.textboxTF_Record)
+
+    def on_click_pbtxt(self):
+        self.get_file_name(self.textboxpbtxt)
+
+    def on_click_model(self):
+        self.get_file_name(self.textboxhModel)
+
+
 class InputWindowTest(QDialog):
 
     def __init__(self):
@@ -548,6 +636,9 @@ class MainWindow(QMainWindow, WindowMixin):
         createTFrecords = action(getStr('createTFrecord'), self.create_Tfrecord,
                       'Ctrl+t', 'open', getStr('createTFrecord'))
 
+        startTrainings = action(getStr('startTraining'), self.start_training,
+                      'Ctrl+Shift+t', 'open', getStr('startTraining'))
+
         loadTestResult = action(getStr('loadTestResults'), self.load_Test_Results,
                       'Ctrl+Shift+t', 'open', getStr('loadTestResults'))
 
@@ -682,7 +773,7 @@ class MainWindow(QMainWindow, WindowMixin):
                               fitWindow=fitWindow, fitWidth=fitWidth,
                               zoomActions=zoomActions,
                               fileMenuActions=(
-                                  open, openImage, createTFrecords, loadTestResult, opendir, save, saveAs, close, resetAll, quit),
+                                  open, openImage, createTFrecords, startTrainings, loadTestResult, opendir, save, saveAs, close, resetAll, quit),
                               beginner=(), advanced=(),
                               editMenu=(edit, copy, delete,
                                         None, color1, self.drawSquaresOption),
@@ -719,7 +810,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(self.menus.file,
-                   (open, openImage, createTFrecords, loadTestResult, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
+                   (open, openImage, createTFrecords, startTrainings, loadTestResult, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
         addActions(self.menus.help, (help, showInfo))
         addActions(self.menus.view, (
             self.autoSaving,
@@ -1784,6 +1875,25 @@ class MainWindow(QMainWindow, WindowMixin):
             print('successfully plotted the results!')
             self.loadFile(os.path.join(head, "plotted.png"))
             QMessageBox.about(self,'Message',f'Result Plotted on the Image!')
+
+    def start_training():
+        self.train_paths = InputWindowTrain()
+        if self.train_paths.exec_():
+            print(self.train_paths.Tf_train)
+            print(self.train_paths.pbtxt_train)
+            print(self.train_paths.pre_model_train)
+
+            self.trainThread = TrainingThread(filename, tail, out_dir,
+                                         self.test_values.heightT,
+                                         self.test_values.widthT,
+                                         self.test_values.pathT)
+            self.trainThread.signal.connect(self.finished_training)
+            self.trainThread.start()
+
+    def finished_training(self, train_model_path):
+        if(train_model_path):
+            print("Training Done Successfully!")
+
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
