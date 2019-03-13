@@ -60,6 +60,24 @@ from libs.hashableQListWidgetItem import HashableQListWidgetItem
 
 __appname__ = 'labelImg'
 
+class TrainingThread(QThread):
+    signal = pyqtSignal('PyQt_PyObject')
+
+    def __init__(self, tf_training, pbtxt_file, model_train ):
+        QThread.__init__(self)
+        self.Tf_training = tf_training
+        self.pbtxt_training = pbtxt_file
+        self.pre_model_training = model_train
+
+        print(self.Tf_training)
+        print(self.pbtxt_training)
+        print(self.pre_model_training)
+
+    def run(self):
+
+        self.signal.emit(self.pre_model_training)
+
+
 class TestingThread(QThread):
     signal = pyqtSignal('PyQt_PyObject', 'PyQt_PyObject')
 
@@ -378,11 +396,11 @@ class InputWindowTrain(QDialog):
         if filename:
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]
-                self.text_box.setText(filename)
+                text_box.setText(filename)
 
     def accept(self):
-        self.Tf_train = int(self.textboxTF_Record.text())
-        self.pbtxt_train = int(self.textboxpbtxt.text())
+        self.Tf_train = self.textboxTF_Record.text()
+        self.pbtxt_train = self.textboxpbtxt.text()
         self.pre_model_train = self.textboxhModel.text()
 
         super().accept()
@@ -1876,17 +1894,13 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(os.path.join(head, "plotted.png"))
             QMessageBox.about(self,'Message',f'Result Plotted on the Image!')
 
-    def start_training():
+    def start_training(self, _value=False):
         self.train_paths = InputWindowTrain()
         if self.train_paths.exec_():
-            print(self.train_paths.Tf_train)
-            print(self.train_paths.pbtxt_train)
-            print(self.train_paths.pre_model_train)
-
-            self.trainThread = TrainingThread(filename, tail, out_dir,
-                                         self.test_values.heightT,
-                                         self.test_values.widthT,
-                                         self.test_values.pathT)
+            self.trainThread = TrainingThread(
+                                         self.train_paths.Tf_train,
+                                         self.train_paths.pbtxt_train,
+                                         self.train_paths.pre_model_train)
             self.trainThread.signal.connect(self.finished_training)
             self.trainThread.start()
 
