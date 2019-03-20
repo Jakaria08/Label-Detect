@@ -141,7 +141,7 @@ class Testing:
 
                 #time.sleep(0.1)
                 progressbar.setValue(n_ims)
-
+                print(f"within the main loop after progress bar {n_ims}")
                 if (n_ims % 100) == 0:
                     print (n_ims)
 

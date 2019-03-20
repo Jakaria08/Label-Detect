@@ -333,36 +333,45 @@ class ImageSliceThread(QThread):
 
         return
 
-class ConsoleWindow(QDialog):
+class ConsoleWindow(QMainWindow):
 
     def __init__(self):
         super(ConsoleWindow, self).__init__()
         self.title = 'Training...'
         self.left = 500
         self.top = 300
-        self.width = 500
+        self.width = 800
         self.height = 400
+        sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
-        self.textEdit = QPlainTextEdit()
-        self.textEdit.move(1, 1)
-        self.textEdit.resize(498, 398)
-        self.textEdit.setPlainText("WHY...")
-        sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
+        w = QWidget()
+        self.setCentralWidget(w)
+        lay = QVBoxLayout(w)
+
+        self.process  = QTextEdit()
+        self.process.moveCursor(QTextCursor.Start)
+        self.process.ensureCursorVisible()
+        self.process.setLineWrapColumnOrWidth(800)
+        self.process.setLineWrapMode(QTextEdit.FixedPixelWidth)
+
+        lay.addWidget(self.process)
 
         self.show()
+
 
     def normalOutputWritten(self, text):
         """Append text to the QTextEdit."""
         # Maybe QTextEdit.append() works as well, but this is how I do it:
-        cursor = self.textEdit.textCursor()
+        cursor = self.process.textCursor()
         cursor.movePosition(QTextCursor.End)
         cursor.insertText(text)
-        self.textEdit.setTextCursor(cursor)
-        self.textEdit.ensureCursorVisible()
+        self.process.setTextCursor(cursor)
+        self.process.ensureCursorVisible()
+
+    def __del__(self):
+        sys.stdout = sys.__stdout__
 
 class InputWindowTrain(QDialog):
 
