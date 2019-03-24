@@ -15,7 +15,7 @@ class Trainer:
 
         p = Path(__file__).parents[2]
         print(p)
-        final_p = os.path.join(p,train.py)
+        final_p = os.path.join(p,'train.py')
 
         training_command = 'python '+final_p+' --logtostderr --train_dir=training_FRCNN_resnet101_coco/ --pipeline_config_path=training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config'
         os.system(training_command)
