@@ -37,6 +37,7 @@ except ImportError:
 
 import resources
 # Add internal libs
+import trainingImage.runTraining as trainer
 import testingImage.testingImg as testing
 import libs.generate_tfrecord as gtf
 from libs.constants import *
@@ -81,6 +82,7 @@ class TrainingThread(QThread):
         print(self.pre_model_training)
 
     def run(self):
+        trainer.Trainer(self.Tf_training, self.pbtxt_training, self.pre_model_training)
         self.signal.emit(self.pre_model_training)
 
 
