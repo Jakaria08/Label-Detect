@@ -13,7 +13,7 @@ class Trainer:
         print(self.pbtxt_training)
         print(self.pre_model_training)
 
-        os.chdir('../..')
+        os.chdir('..')
         print(os.getcwd())
 
         training_command = 'python train.py --logtostderr --train_dir=training_FRCNN_resnet101_coco/ --pipeline_config_path=training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config'
