@@ -13,8 +13,6 @@ class Trainer:
         print(self.pbtxt_training)
         print(self.pre_model_training)
 
-        p = Path(__file__).parents[2]
-        print(p)
         os.chdir('../..')
         print(os.getcwd())
 
