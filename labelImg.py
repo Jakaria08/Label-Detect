@@ -71,18 +71,20 @@ class EmittingStream(QObject):
 class TrainingThread(QThread):
     signal = pyqtSignal('PyQt_PyObject')
 
-    def __init__(self, tf_training, pbtxt_file, model_train ):
+    def __init__(self, tf_training, pbtxt_file, model_train, config_file ):
         QThread.__init__(self)
         self.Tf_training = tf_training
         self.pbtxt_training = pbtxt_file
         self.pre_model_training = model_train
+        self.config_file = config_file
         self.nwindow = ConsoleWindow()
         print(self.Tf_training)
         print(self.pbtxt_training)
         print(self.pre_model_training)
+        print(self.config_file)
 
     def run(self):
-        trainer.Trainer(self.Tf_training, self.pbtxt_training, self.pre_model_training)
+        trainer.Trainer(self.Tf_training, self.pbtxt_training, self.pre_model_training, self.config_file)
         self.signal.emit(self.pre_model_training)
 
 
@@ -383,10 +385,11 @@ class InputWindowTrain(QDialog):
         self.left = 500
         self.top = 300
         self.width = 400
-        self.height = 250
+        self.height = 330
         self.Tf_train = ''
         self.pbtxt_train = ''
         self.pre_model_train = ''
+        self.config_file = ''
         self.initUI()
 
     def initUI(self):
@@ -429,8 +432,20 @@ class InputWindowTrain(QDialog):
         self.buttonModel.move(270, 143)
         self.buttonModel.clicked.connect(self.on_click_model)
 
+        self.labelConfig = QLabel('Config File: ', self)
+        self.labelConfig.move(20,200)
+        self.labelConfig.resize(130,40)
+
+        self.textboxhConfig = QLineEdit(self)
+        self.textboxhConfig.move(130,200)
+        self.textboxhConfig.resize(130,30)
+
+        self.buttonConfig = QPushButton('Select Config File', self)
+        self.buttonConfig.move(270, 203)
+        self.buttonConfig.clicked.connect(self.on_click_config)
+
         self.dialogbutton = QDialogButtonBox(self)
-        self.dialogbutton.move(130, 200)
+        self.dialogbutton.move(130, 260)
         self.dialogbutton.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 
         self.dialogbutton.accepted.connect(self.accept)
@@ -450,6 +465,7 @@ class InputWindowTrain(QDialog):
         self.Tf_train = self.textboxTF_Record.text()
         self.pbtxt_train = self.textboxpbtxt.text()
         self.pre_model_train = self.textboxhModel.text()
+        self.config_file = self.textboxhConfig.text()
 
         super().accept()
 
@@ -461,6 +477,9 @@ class InputWindowTrain(QDialog):
 
     def on_click_model(self):
         self.get_file_name(self.textboxhModel)
+
+    def on_click_config(self):
+        self.get_file_name(self.textboxhConfig)
 
 
 class InputWindowTest(QDialog):
@@ -1948,7 +1967,8 @@ class MainWindow(QMainWindow, WindowMixin):
             self.trainThread = TrainingThread(
                                          self.train_paths.Tf_train,
                                          self.train_paths.pbtxt_train,
-                                         self.train_paths.pre_model_train)
+                                         self.train_paths.pre_model_train,
+                                         self.train_paths.config_file)
             self.trainThread.signal.connect(self.finished_training)
             self.trainThread.start()
 

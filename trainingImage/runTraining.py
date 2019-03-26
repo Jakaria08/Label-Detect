@@ -33,18 +33,23 @@ class ProgressBar(QProgressDialog):
 
 class Trainer:
 
-    def __init__(self,tf_training, pbtxt_file, model_train):
+    def __init__(self,tf_training, pbtxt_file, model_train, config_file):
 
         self.Tf_training = tf_training
         self.pbtxt_training = pbtxt_file
         self.pre_model_training = model_train
+        self.config_file = config_file
 
         print(self.Tf_training)
         print(self.pbtxt_training)
         print(self.pre_model_training)
+        print(self.config_file)
 
         os.chdir('..')
         print(os.getcwd())
 
+        progressbar = ProgressBar(100, title = "Training Started...")
+        progressbar.setValue(2)
+
         training_command = 'python train.py --logtostderr --train_dir=training_FRCNN_resnet101_coco/ --pipeline_config_path=training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config'
-        os.system(training_command)
+        #os.system(training_command)
