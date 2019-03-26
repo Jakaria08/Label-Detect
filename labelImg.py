@@ -1975,7 +1975,7 @@ class MainWindow(QMainWindow, WindowMixin):
     def finished_training(self, train_model_path):
         if(train_model_path):
             print("Training Done Successfully!")
-            QMessageBox.about(self,'Message',f'Training Completed!')
+            QMessageBox.about(self,'Message',f'Training Completed & Inference Graph Created!')
 
 
     def saveFile(self, _value=False):
