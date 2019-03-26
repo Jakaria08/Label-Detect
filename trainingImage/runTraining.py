@@ -56,7 +56,7 @@ class Trainer:
                               --train_dir=training_FRCNN_resnet101_coco/
                               --pipeline_config_path=training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config"""
         #os.system(training_command)
-        frozen_graph_command = """python export_inference_graph
+        frozen_graph_command = """python export_inference_graph.py
                                   --input_type image_tensor
                                   --pipeline_config_path /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config
                                   --trained_checkpoint_prefix /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/model.ckpt-63646
