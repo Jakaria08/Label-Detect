@@ -1,4 +1,5 @@
 import os
+import in_place
 from pathlib import Path
 
 try:
@@ -45,20 +46,39 @@ class Trainer:
         print(self.pre_model_training)
         print(self.config_file)
 
+        head, tail = os.path.split(self.Tf_training)
+        test_path = os.path.join(head, 'test.record')
+
+        with in_place.InPlace('self.config_file') as file:
+            for line in file:
+                if 'PATH_TO_BE_CONFIGURED_MODEL' in line:
+                    line = line.replace('PATH_TO_BE_CONFIGURED_MODEL', self.pre_model_training)
+                elif 'PATH_TO_BE_CONFIGURED_TRAIN' in line:
+                    line = line.replace('PATH_TO_BE_CONFIGURED_TRAIN', self.Tf_training)
+                elif 'PATH_TO_BE_CONFIGURED_TEST' in line:
+                    line = line.replace('PATH_TO_BE_CONFIGURED_TEST', test_path)
+                else:
+                    line = line.replace('PATH_TO_BE_CONFIGURED_PBTXT', self.pbtxt_training)
+                file.write(line)
+
+        train_dir = os.path.join(head,'Training_Folder')
+        if os.path.exists(train_dir):
+            print('Directory Exists!')
+            return
+
+        os.mkdir(train_dir)
+
         os.chdir('..')
         print(os.getcwd())
 
         progressbar = ProgressBar(100, title = "Training Started...")
         progressbar.setValue(2)
 
-        training_command = """python train.py \
-                              --logtostderr \
-                              --train_dir=training_FRCNN_resnet101_coco/ \
-                              --pipeline_config_path=training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config"""
+        training_command = "python train.py --logtostderr --train_dir="+train_dir+" --pipeline_config_path="++
         #os.system(training_command)
         frozen_graph_command = """python export_inference_graph.py \
                                   --input_type image_tensor \
                                   --pipeline_config_path /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config \
                                   --trained_checkpoint_prefix /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/model.ckpt-63646 \
                                   --output_directory /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/"""
-        os.system(frozen_graph_command)
+        #os.system(frozen_graph_command)
