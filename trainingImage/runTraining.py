@@ -1,6 +1,7 @@
 import os
 import in_place
 from pathlib import Path
+from sys import platform as _platform
 
 try:
     from PyQt5.QtGui import *
@@ -68,14 +69,26 @@ class Trainer:
 
         os.mkdir(train_dir)
 
-        os.chdir('..')
-        print(os.getcwd())
+        current_dir = os.getcwd()
+        top_dir_win = os.path.join(*(x.split(os.path.sep)[1:2]))
+        top_dir_linux = os.path.join(*(x.split(os.path.sep)[1:3]))
+
+        if _platform == "linux" or _platform == "linux2":
+            print('linux')
+            path = os.path.join(top_dir_linux,'/tensorflow/models/research/object_detection')
+        elif _platform == "win64" or "win32":
+            print('windows')
+            path = os.path.join(top_dir_win,'/tensorflow/models/research/object_detection')
+        else:
+            print('Not supported!')
+
+        os.chdir(path)
 
         progressbar = ProgressBar(100, title = "Training Started...")
         progressbar.setValue(2)
 
-        training_command = "python train.py --logtostderr --train_dir="+train_dir+" --pipeline_config_path="++
-        #os.system(training_command)
+        training_command = "python train.py --logtostderr --train_dir="+train_dir+" --pipeline_config_path="+self.config_file
+        os.system(training_command)
         frozen_graph_command = """python export_inference_graph.py \
                                   --input_type image_tensor \
                                   --pipeline_config_path /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config \
