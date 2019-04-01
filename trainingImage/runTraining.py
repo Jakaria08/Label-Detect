@@ -73,8 +73,8 @@ class Trainer:
         os.mkdir(train_dir)
 
         current_dir = os.getcwd()
-        top_dir_win = os.path.join(*(x.split(os.path.sep)[1:2]))
-        top_dir_linux = os.path.join(*(x.split(os.path.sep)[1:3]))
+        top_dir_win = os.path.join(*(current_dir.split(os.path.sep)[1:2]))
+        top_dir_linux = os.path.join(*(current_dir.split(os.path.sep)[1:3]))
 
         if _platform == "linux" or _platform == "linux2":
             print('linux')
