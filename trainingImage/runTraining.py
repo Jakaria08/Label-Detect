@@ -78,10 +78,11 @@ class Trainer:
 
         if _platform == "linux" or _platform == "linux2":
             print('linux')
-            path = os.path.join(top_dir_linux,'/tensorflow/models/research/object_detection')
+            path = os.path.join(top_dir_linux,'tensorflow/models/research/object_detection')
+            print(path)
         elif _platform == "win64" or "win32":
             print('windows')
-            path = os.path.join(top_dir_win,'/tensorflow/models/research/object_detection')
+            path = os.path.join(top_dir_win,'tensorflow/models/research/object_detection')
         else:
             print('Not supported!')
 
