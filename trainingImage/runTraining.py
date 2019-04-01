@@ -53,7 +53,7 @@ class Trainer:
         head1, tail1 = os.path.split(self.pre_model_training)
         new_model_path = os.path.join(head1,'model.ckpt')
 
-        with in_place.InPlace('self.config_file') as file:
+        with in_place.InPlace(self.config_file) as file:
             for line in file:
                 if 'PATH_TO_BE_CONFIGURED_MODEL' in line:
                     line = line.replace('PATH_TO_BE_CONFIGURED_MODEL', new_model_path)

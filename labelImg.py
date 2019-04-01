@@ -455,7 +455,7 @@ class InputWindowTrain(QDialog):
 
     def get_file_name(self, text_box, _value=False):
         path = '.'
-        filename = QFileDialog.getOpenFileName(self, '%s - Choose Model file' % __appname__, path)
+        filename = QFileDialog.getOpenFileName(self, '%s - Choose a file' % __appname__, path)
         if filename:
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]
