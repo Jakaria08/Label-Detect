@@ -50,10 +50,13 @@ class Trainer:
         head, tail = os.path.split(self.Tf_training)
         test_path = os.path.join(head, 'test.record')
 
+        head1, tail1 = os.path.split(self.pre_model_training)
+        new_model_path = os.path.join(head1,'model.ckpt')
+
         with in_place.InPlace('self.config_file') as file:
             for line in file:
                 if 'PATH_TO_BE_CONFIGURED_MODEL' in line:
-                    line = line.replace('PATH_TO_BE_CONFIGURED_MODEL', self.pre_model_training)
+                    line = line.replace('PATH_TO_BE_CONFIGURED_MODEL', new_model_path)
                 elif 'PATH_TO_BE_CONFIGURED_TRAIN' in line:
                     line = line.replace('PATH_TO_BE_CONFIGURED_TRAIN', self.Tf_training)
                 elif 'PATH_TO_BE_CONFIGURED_TEST' in line:
