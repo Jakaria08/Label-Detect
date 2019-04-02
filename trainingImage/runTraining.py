@@ -105,7 +105,7 @@ class Trainer:
 
         model_number = max(get_strings)
         model_name = 'model.ckpt-'+str(model_number)
-        model_checkpoint_path = os.path.join(train_dir,model_number)
+        model_checkpoint_path = os.path.join(train_dir,str(model_number))
         print(model_checkpoint_path)
 
         frozen_graph_command = """python export_inference_graph.py \
