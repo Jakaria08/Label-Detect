@@ -105,12 +105,12 @@ class Trainer:
 
         model_number = max(get_strings)
         model_name = 'model.ckpt-'+str(model_number)
-        model_checkpoint_path = os.path.join(train_dir,str(model_number))
+        model_checkpoint_path = os.path.join(train_dir,model_name)
         print(model_checkpoint_path)
 
         frozen_graph_command = """python export_inference_graph.py \
                                   --input_type image_tensor \
                                   --pipeline_config_path """+self.config_file+""" \
-                                  --trained_checkpoint_prefix """+model_name+""" \
+                                  --trained_checkpoint_prefix """+model_checkpoint_path+""" \
                                   --output_directory """+train_dir
         os.system(frozen_graph_command)
