@@ -1,4 +1,5 @@
 import os
+import glob
 import in_place
 from pathlib import Path
 from sys import platform as _platform
@@ -90,13 +91,24 @@ class Trainer:
         os.chdir(path)
 
         progressbar = ProgressBar(100, title = "Training Started...")
-        progressbar.setValue(2)
+        #progressbar.setValue(2)
 
         training_command = "python train.py --logtostderr --train_dir="+train_dir+" --pipeline_config_path="+self.config_file
-        os.system(training_command)
+        #os.system(training_command)
+
+        get_strings = []
+        checkpoint_path = train_dir
+
+        for checkpoint in glob.glob(checkpoint_path+'/*.index'):
+            get_strings.append(int(checkpoint.split('.')[1].split('-')[1]))
+
+        model_number = max(get_strings)
+        model_name = 'model.ckpt-'+str(model_number)
+        print(model_name)
+
         frozen_graph_command = """python export_inference_graph.py \
                                   --input_type image_tensor \
-                                  --pipeline_config_path /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/faster_rcnn_resnet101_coco.config \
-                                  --trained_checkpoint_prefix /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/model.ckpt-63646 \
-                                  --output_directory /home/hipstudents/tensorflow/models/research/object_detection/training_FRCNN_resnet101_coco/"""
-        #os.system(frozen_graph_command)
+                                  --pipeline_config_path """+self.config_file+""" \
+                                  --trained_checkpoint_prefix """+model_name+""" \
+                                  --output_directory """+train_dir
+        os.system(frozen_graph_command)
