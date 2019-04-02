@@ -53,7 +53,7 @@ class Trainer:
 
         head1, tail1 = os.path.split(self.pre_model_training)
         new_model_path = os.path.join(head1,'model.ckpt')
-"""
+        """
         with in_place.InPlace(self.config_file) as file:
             for line in file:
                 if 'PATH_TO_BE_CONFIGURED_MODEL' in line:
@@ -65,7 +65,7 @@ class Trainer:
                 else:
                     line = line.replace('PATH_TO_BE_CONFIGURED_PBTXT', self.pbtxt_training)
                 file.write(line)
-"""
+        """
         train_dir = os.path.join(head,'Training_Folder')
 
         if os.path.exists(train_dir):
