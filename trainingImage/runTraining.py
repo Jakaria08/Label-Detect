@@ -68,7 +68,6 @@ class Trainer:
         train_dir = os.path.join(head,'Training_Folder')
         if os.path.exists(train_dir):
             print('Directory Exists!')
-            return
 
         os.mkdir(train_dir)
 
