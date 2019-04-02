@@ -67,10 +67,11 @@ class Trainer:
                 file.write(line)
 
         train_dir = os.path.join(head,'Training_Folder')
+
         if os.path.exists(train_dir):
             print('Directory Exists!')
-
-        os.mkdir(train_dir)
+        else:
+            os.mkdir(train_dir)
 
         current_dir = os.getcwd()
         top_dir_wind = os.path.join(*(current_dir.split(os.path.sep)[1:2]))
