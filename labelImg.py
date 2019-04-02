@@ -15,6 +15,7 @@ import glob
 import pandas as pd
 import numpy as np
 import xml.etree.ElementTree as ET
+import logging
 
 from functools import partial
 from collections import defaultdict
@@ -346,6 +347,7 @@ class ConsoleWindow(QMainWindow):
         self.top = 300
         self.width = 800
         self.height = 400
+        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
         sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
         self.initUI()
 
