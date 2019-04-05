@@ -226,6 +226,8 @@ class Testing:
                 start_time = time.time()
                 new_global_boxes = [list() for f in range(len(self.outpath))]
                 new_global_boxes_sup = list()
+                class_value = list()
+                probability_score = list()
 
                 path_size = len(self.outpath)
                 progressbar = ProgressBar(path_size, title = "Detecting...")
@@ -251,6 +253,7 @@ class Testing:
 
                     boxs = np.squeeze(boxes)
                     scors = np.squeeze(scores)
+                    class_val = np.squeeze(classes).astype(np.int32)
                     #finding global co-ordinate
                     outp = os.path.basename(self.outpath[i])
                     box_co = outp.split('_')
@@ -272,6 +275,8 @@ class Testing:
 
                             #new_global_boxes[i].append([ymin, xmin, ymax, xmax])
                             new_global_boxes_sup.append([ymin, xmin, ymax, xmax])
+                            class_value.append(class_val[j])
+                            probability_score.append(scors[j])
 
                     #time.sleep(0.1)
                     progressbar.setValue(i)
@@ -279,22 +284,25 @@ class Testing:
                 print('Total testing time after evaluating %d images : %.3f sec'%(i, time.time()-start_time))
 
                 all_boxes = np.array(new_global_boxes_sup)
+                classes = np.array(class_value)
+                scores = np.array(probability_score)
                 print(all_boxes.shape)
-                self.save_box(all_boxes)
+                self.save_box(all_boxes, classes, scores)
 
     # Malisiewicz et al.
-    def non_max_suppression_fast(self, boxes, overlapThresh):
+    def non_max_suppression_fast(self, boxes, overlapThresh, class_values, probability_scores):
         # if there are no boxes, return an empty list
         if len(boxes) == 0:
             return []
 
         # if the bounding boxes integers, convert them to floats --
         # this is important since we'll be doing a bunch of divisions
-        if boxes.dtype.kind == "i":
+        if boxes.dtype.kind == "i" or "S":
             boxes = boxes.astype("float")
 
         # initialize the list of picked indexes
         pick = []
+        pick_highest_score_index = []
 
         # grab the coordinates of the bounding boxes
         y1 = boxes[:,0]
@@ -330,6 +338,14 @@ class Testing:
 
             # compute the ratio of overlap
             overlap = (w * h) / area[idxs[:last]]
+            #choose the scores corresponding to the suppressed boxes
+            overlaps = np.concatenate(([last], np.where(overlap > 0.1)[0]))
+
+            current_scores = probability_scores[idxs[overlaps]]
+            score_index = current_scores.argmax(axis=0)
+            final_index = idxs[overlaps[score_index]]
+
+            pick_highest_score_index.append(final_index)
 
             # delete all indexes from the index list that have
             idxs = np.delete(idxs, np.concatenate(([last],
@@ -337,9 +353,9 @@ class Testing:
 
             # return only the bounding boxes that were picked using the
             # integer data type
-        return boxes[pick].astype("int")
+        return boxes[pick].astype("int"), class_values[pick_highest_score_index].astype("int")
 
-    def save_box(self, all_boxes):
+    def save_box(self, all_boxes, classes, scores):
         print(self.testOutputDir)
         test_out_directory = os.path.join(self.testOutputDir, "boxCSV")
         if os.path.exists(test_out_directory):
@@ -348,6 +364,9 @@ class Testing:
         os.mkdir(test_out_directory)
         np.savetxt(os.path.join(test_out_directory, "all_boxes.csv"), all_boxes, delimiter=",")
         np.savetxt(os.path.join(test_out_directory, "all_boxes_dec.csv"), all_boxes, fmt="%d", delimiter=",")
-        single_boxes = self.non_max_suppression_fast(all_boxes, 0.1)
+        np.savetxt(os.path.join(test_out_directory, "classes.csv"), classes, fmt="%d", delimiter=",")
+        np.savetxt(os.path.join(test_out_directory, "scores.csv"), scores, fmt="%d", delimiter=",")
+        single_boxes, out_classes = self.non_max_suppression_fast(all_boxes, 0.1, classes, scores)
         print(single_boxes[10])
         np.savetxt(os.path.join(test_out_directory, "single_boxes.csv"), single_boxes, fmt="%d", delimiter=",")
+        np.savetxt(os.path.join(test_out_directory, "out_classes.csv"), out_classes, fmt="%d", delimiter=",")

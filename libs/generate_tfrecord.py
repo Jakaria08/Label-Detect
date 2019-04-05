@@ -28,6 +28,16 @@ def class_text_to_int(row_label):
     else:
         None
 
+def class_int_to_text(label):
+    if label == 1:
+        return 'empty_site'
+    elif label == 2:
+	    return 'single_tank'
+    elif label == 3:
+	    return 'multiple_tank'
+    else:
+        None
+
 
 def split(df, group):
     data = namedtuple('data', ['filename', 'object'])

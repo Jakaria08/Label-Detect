@@ -1944,6 +1944,9 @@ class MainWindow(QMainWindow, WindowMixin):
             test_out_file = os.path.join(test_out_dir, "boxCSV", 'single_boxes.csv')
             my_data = np.genfromtxt(test_out_file, delimiter=',')
             single_boxes = my_data.astype(int)
+            test_out_classes = os.path.join(test_out_dir, "boxCSV", 'out_classes.csv')
+            my_data_class = np.genfromtxt(test_out_classes, delimiter=',')
+            classes_out = my_data_class.astype(int)
             img = cv2.imread(test_img_path, 1)
 
             size = len(single_boxes[0])
@@ -1952,7 +1955,10 @@ class MainWindow(QMainWindow, WindowMixin):
 
             for i in range(single_boxes.shape[0]):
                 y1,x1,y2,x2 = single_boxes[i]
+                current_class = int(classes_out[i])
+                class_name = gtf.class_int_to_text(current_class)
                 cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,0), 4)
+                cv2.putText(img, class_name, (x1+3, y1+3), font, 2,(255,0,0),2,cv2.LINE_AA)
                 print(i)
                 progressbar.setValue(i)
 
