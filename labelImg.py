@@ -1959,7 +1959,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 class_name = gtf.class_int_to_text(current_class)
                 cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,0), 4)
                 font = cv2.FONT_HERSHEY_SIMPLEX
-                cv2.putText(img, class_name, (x1+10, y1+10), font, 0.25,(255,0,0),2,cv2.LINE_AA)
+                cv2.putText(img, class_name, (x1+5, y1+8), font, 0.3,(255,0,0),1,cv2.LINE_AA)
                 print(i)
                 progressbar.setValue(i)
 
