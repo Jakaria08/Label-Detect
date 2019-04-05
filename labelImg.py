@@ -1941,10 +1941,10 @@ class MainWindow(QMainWindow, WindowMixin):
         if test_out_dir:
             print('successfully generated test results')
 
-            test_out_file = os.path.join(test_out_dir, "boxCSV", 'single_boxes.csv')
+            test_out_file = os.path.join(test_out_dir, "boxCSV", 'all_boxes.csv')
             my_data = np.genfromtxt(test_out_file, delimiter=',')
             single_boxes = my_data.astype(int)
-            test_out_classes = os.path.join(test_out_dir, "boxCSV", 'out_classes.csv')
+            test_out_classes = os.path.join(test_out_dir, "boxCSV", 'classes.csv')
             my_data_class = np.genfromtxt(test_out_classes, delimiter=',')
             classes_out = my_data_class.astype(int)
             img = cv2.imread(test_img_path, 1)
