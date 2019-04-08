@@ -727,7 +727,7 @@ class MainWindow(QMainWindow, WindowMixin):
                       'Ctrl+Shift+t', 'open', getStr('startTraining'))
 
         loadTestResult = action(getStr('loadTestResults'), self.load_Test_Results,
-                      'Ctrl+Shift+t', 'open', getStr('loadTestResults'))
+                      'Ctrl+Shift+w', 'open', getStr('loadTestResults'))
 
         opendir = action(getStr('openDir'), self.openDirDialog,
                          'Ctrl+u', 'open', getStr('openDir'))
