@@ -159,14 +159,11 @@ License
 ~~~~~~~
 `Free software: MIT license <https://github.com/tzutalin/labelImg/blob/master/LICENSE>`_
 
-Citation: Tzutalin. LabelImg. Git code (2015). https://github.com/tzutalin/labelImg
+Citation
+~~~~~~~~
+Tzutalin. LabelImg. Git code (2015). https://github.com/tzutalin/labelImg
 
 Related
 ~~~~~~~
-
-1. `ImageNet Utils <https://github.com/tzutalin/ImageNet_Utils>`__ to
-   download image, create a label text for machine learning, etc
-2. `Use Docker to run labelImg <https://hub.docker.com/r/tzutalin/py2qt4>`__
-3. `Generating the PASCAL VOC TFRecord files <https://github.com/tensorflow/models/blob/4f32535fe7040bb1e429ad0e3c948a492a89482d/research/object_detection/g3doc/preparing_inputs.md#generating-the-pascal-voc-tfrecord-files>`__
-4. `App Icon based on Icon by Nick Roach (GPL)` <https://www.elegantthemes.com/> <https://www.iconfinder.com/icons/1054978/shop_tag_icon> __
+`App Icon based on Icon by Nick Roach (GPL)` <https://www.elegantthemes.com/> <https://www.iconfinder.com/icons/1054978/shop_tag_icon> __
 
