@@ -1,5 +1,5 @@
-LabelImg
-========
+Label-Detection
+======================
 
 .. image:: https://img.shields.io/pypi/v/labelimg.svg
         :target: https://pypi.python.org/pypi/labelimg
@@ -7,52 +7,36 @@ LabelImg
 .. image:: https://img.shields.io/travis/tzutalin/labelImg.svg
         :target: https://travis-ci.org/tzutalin/labelImg
 
-LabelImg is a graphical image annotation tool.
+LabelImg-Detection  is a graphical image annotation tool and using this tool user can also train and test large satellite images. User can create small patches from large image, annotate it, create training and testing data, select model, train-test the model.
 
 It is written in Python and uses Qt for its graphical interface.
 
 Annotations are saved as XML files in PASCAL VOC format, the format used
 by `ImageNet <http://www.image-net.org/>`__.  Besdies, it also supports YOLO format
 
-.. image:: https://raw.githubusercontent.com/tzutalin/labelImg/master/demo/demo3.jpg
-     :alt: Demo Image
+User can use many deep learning models such as Faster RCNN Resnet or SSD Mobilenet
 
-.. image:: https://raw.githubusercontent.com/tzutalin/labelImg/master/demo/demo.jpg
-     :alt: Demo Image
+.. image:: https://user-images.githubusercontent.com/7825643/55756403-af622e80-5a0e-11e9-81fd-873b54cae6d9.png
 
-`Watch a demo video <https://youtu.be/p0nR2YsCY_U>`__
+`Watch a demo video <https://youtu.be/FFe5Y7u7APs>`__ [Labeling]
+
+`Watch a demo video <https://youtu.be/WNz9Djt9ETc>`__ [Training]
+
+`Watch a demo video <https://youtu.be/VCEd9WKQpWA>`__ [Testing]
 
 Installation
 ------------------
-
-Download prebuilt binaries
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
--  `Windows <https://github.com/tzutalin/labelImg/releases>`__
-
--  macOS. Binaries for macOS are not yet available. Help would be appreciated. At present, it must be `built from source <#macos>`__.
 
 Build from source
 ~~~~~~~~~~~~~~~~~
 
 Linux/Ubuntu/Mac requires at least `Python
-2.6 <https://www.python.org/getit/>`__ and has been tested with `PyQt
-4.8 <https://www.riverbankcomputing.com/software/pyqt/intro>`__.
+3.6 <https://www.python.org/getit/>`__ and has been tested with `PyQt
+5.8 <https://www.riverbankcomputing.com/software/pyqt/intro>`__.
 
 
 Ubuntu Linux
 ^^^^^^^^^^^^
-Python 2 + Qt4
-
-.. code::
-
-    sudo apt-get install pyqt4-dev-tools
-    sudo pip install lxml
-    make qt4py2
-    python labelImg.py
-    python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
-
-Python 3 + Qt5
 
 .. code::
 
@@ -61,72 +45,14 @@ Python 3 + Qt5
     make qt5py3
     python3 labelImg.py
     python3 labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
+    
 
-macOS
-^^^^
-Python 2 + Qt4
-
-.. code::
-
-    brew install qt qt4
-    brew install libxml2
-    make qt4py2
-    python labelImg.py
-    python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
-
-Python 3 + Qt5 (Works on macOS High Sierra)
-
-.. code::
-
-    brew install qt  # will install qt-5.x.x
-    brew install libxml2
-    make qt5py3
-    python3 labelImg.py
-    python3 labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
-
-    As a side note, if mssing pyrcc5 or lxml, try
-    pip3 install pyqt5 lxml
-
-
-**NEW** Python 3 Virtualenv + Binary
-This avoids a lot of the QT / Python version issues,
-and gives you a nice .app file with a new SVG Icon
-in your /Applications folder. You can consider this script: build-tools/build-for-macos.sh
-
-.. code::
-
-
-    brew install python3
-    pip install pipenv
-    pipenv --three
-    pipenv shell
-    pip install py2app
-    pip install PyQt5 lxml
-    make qt5py3
-    rm -rf build dist
-    python setup.py py2app -A
-    mv "dist/labelImg.app" /Applications
-
-Windows
-^^^^^^^
-
-Download and setup `Python 2.6 or
-later <https://www.python.org/downloads/windows/>`__,
-`PyQt4 <https://www.riverbankcomputing.com/software/pyqt/download>`__
-and `install lxml <http://lxml.de/installation.html>`__.
-
-Open cmd and go to the `labelImg <#labelimg>`__ directory
-
-.. code::
-
-    pyrcc4 -o resources.py resources.qrc
-    python labelImg.py
-    python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
+`Install Tensorflow with GPU support <https://medium.com/@naomi.fridman/install-conda-tensorflow-gpu-and-keras-on-ubuntu-18-04-1b403e740e25>`_
 
 Windows + Anaconda
 ^^^^^^^
 
-Download and install `Anaconda <https://www.anaconda.com/download/#download>`__ (Python 3+)
+Download and install `Anaconda <https://www.anaconda.com/download/#download>`__ (Python 3.6+)
 
 Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
 
@@ -137,40 +63,11 @@ Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
     python labelImg.py
     python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
 
-Get from PyPI
-~~~~~~~~~~~~~~~~~
-.. code::
-
-    pip install labelImg
-    labelImg
-    labelImg [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
-
-I tested pip on Ubuntu 14.04 and 16.04. However, I didn't test pip on macOS and Windows
-
-Use Docker
-~~~~~~~~~~~~~~~~~
-.. code::
-
-    docker run -it \
-    --user $(id -u) \
-    -e DISPLAY=unix$DISPLAY \
-    --workdir=$(pwd) \
-    --volume="/home/$USER:/home/$USER" \
-    --volume="/etc/group:/etc/group:ro" \
-    --volume="/etc/passwd:/etc/passwd:ro" \
-    --volume="/etc/shadow:/etc/shadow:ro" \
-    --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    tzutalin/py2qt4
-
-    make qt4py2;./labelImg.py
-
-You can pull the image which has all of the installed and required dependencies. `Watch a demo video <https://youtu.be/nw1GexJzbCI>`__
-
 
 Usage
 -----
-
+Annotation
+----------
 Steps (PascalVOC)
 ~~~~~
 
@@ -262,14 +159,11 @@ License
 ~~~~~~~
 `Free software: MIT license <https://github.com/tzutalin/labelImg/blob/master/LICENSE>`_
 
-Citation: Tzutalin. LabelImg. Git code (2015). https://github.com/tzutalin/labelImg
+Citation
+~~~~~~~~
+Tzutalin. LabelImg. Git code (2015). https://github.com/tzutalin/labelImg
 
 Related
 ~~~~~~~
-
-1. `ImageNet Utils <https://github.com/tzutalin/ImageNet_Utils>`__ to
-   download image, create a label text for machine learning, etc
-2. `Use Docker to run labelImg <https://hub.docker.com/r/tzutalin/py2qt4>`__
-3. `Generating the PASCAL VOC TFRecord files <https://github.com/tensorflow/models/blob/4f32535fe7040bb1e429ad0e3c948a492a89482d/research/object_detection/g3doc/preparing_inputs.md#generating-the-pascal-voc-tfrecord-files>`__
-4. `App Icon based on Icon by Nick Roach (GPL)` <https://www.elegantthemes.com/> <https://www.iconfinder.com/icons/1054978/shop_tag_icon> __
+`App Icon based on Icon by Nick Roach (GPL)` <https://www.elegantthemes.com/> <https://www.iconfinder.com/icons/1054978/shop_tag_icon> __
 
