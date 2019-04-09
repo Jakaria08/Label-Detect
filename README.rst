@@ -17,9 +17,11 @@ by `ImageNet <http://www.image-net.org/>`__.  Besdies, it also supports YOLO for
 User can use many deep learning models such as Faster RCNN Resnet or SSD Mobilenet
 
 .. image:: https://user-images.githubusercontent.com/7825643/55756403-af622e80-5a0e-11e9-81fd-873b54cae6d9.png
-*Image Labeling*
+|*Image Labeling*|
+:alt: Demo Image
 .. image:: https://user-images.githubusercontent.com/7825643/55766217-e1848800-5a30-11e9-808d-dcfbf64ff387.png
-*Detection*
+|*Detection*|
+:alt: Demo Image
 
 `Watch a demo video <https://youtu.be/FFe5Y7u7APs>`__ [Labeling]
 
