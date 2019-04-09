@@ -35,7 +35,7 @@ Installation
 Build from source
 ~~~~~~~~~~~~~~~~~
 
-Linux/Ubuntu/Mac requires at least `Python
+Linux/Ubuntu requires at least `Python
 3.6 <https://www.python.org/getit/>`__ and has been tested with `PyQt
 5.8 <https://www.riverbankcomputing.com/software/pyqt/intro>`__.
 
@@ -49,7 +49,6 @@ Ubuntu Linux
     sudo pip3 install -r requirements/requirements-linux-python3.txt
     make qt5py3
     python3 labelImg.py
-    python3 labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
     
 
 `Install Tensorflow with GPU support <https://medium.com/@naomi.fridman/install-conda-tensorflow-gpu-and-keras-on-ubuntu-18-04-1b403e740e25>`_
@@ -66,7 +65,6 @@ Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
     conda install pyqt=5
     pyrcc5 -o resources.py resources.qrc
     python labelImg.py
-    python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
 
 
 Usage
