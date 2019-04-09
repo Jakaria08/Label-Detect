@@ -95,7 +95,7 @@ class Trainer:
         #progressbar.setValue(2)
 
         training_command = "python train.py --logtostderr --train_dir="+train_dir+" --pipeline_config_path="+self.config_file
-        #os.system(training_command)
+        os.system(training_command)
 
         get_strings = []
         checkpoint_path = train_dir
