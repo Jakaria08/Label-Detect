@@ -14,7 +14,9 @@ It is written in Python and uses Qt for its graphical interface.
 Annotations are saved as XML files in PASCAL VOC format, the format used
 by `ImageNet <http://www.image-net.org/>`__.  Besdies, it also supports YOLO format
 
-User can use many deep learning models such as Faster RCNN Resnet or SSD Mobilenet
+User can use many deep learning models such as Faster RCNN Resnet or SSD Mobilenet.
+
+We can see a example of image labeling and detection in the following images. Sample Labeling, Traing and Testing procedures can be found in the videos that are posted below the images.
 
 .. image:: https://user-images.githubusercontent.com/7825643/55756403-af622e80-5a0e-11e9-81fd-873b54cae6d9.png
      :alt: Demo Image
