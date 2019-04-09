@@ -25,7 +25,9 @@ We can see a example of image labeling and detection in the following images. Sa
 
 `Watch a demo video <https://youtu.be/FFe5Y7u7APs>`__ [Labeling]
 
-`Watch a demo video <https://youtu.be/WNz9Djt9ETc>`__ [Training]
+`Watch a demo video <https://youtu.be/WNz9Djt9ETc>`__ [Training Part-1]
+
+`Watch a demo video <https://youtu.be/nbvI0EviPbI>`__ [Training Part-2]
 
 `Watch a demo video <https://youtu.be/VCEd9WKQpWA>`__ [Testing]
 
