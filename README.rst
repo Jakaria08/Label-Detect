@@ -109,8 +109,7 @@ Steps
 7. Then TFRecords files for training and testing will be created under TFrecords folder withing the directory selected in step 6.
 8. Select 'Start Training' [Ctrl+Shift+t] 
 9. Select the TFRecord file for training which is 'train.record' 
-10. Select 'detection.pbtxt' and a config file from 'Label-Detect/Training_config' directory. If you want to use Faster R-CNN
-ResNet-101 then select the corresponding file otherwise you can select the config file for SSD MobileNet.
+10. Select 'detection.pbtxt' and a config file from 'Label-Detect/Training_config' directory. If you want to use Faster R-CNN ResNet-101 then select the corresponding file otherwise you can select the config file for SSD MobileNet.
 11. Downdload the `Faster R-CNN Resnet-101 model,  <http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz>`_ extract it and select the 'model.ckpt.index' file for the model file.  
 
 Testing
