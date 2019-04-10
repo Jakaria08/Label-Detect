@@ -1,5 +1,5 @@
-Label-Detection
-======================
+Label-Detect
+=============
 
 Label-Detection  is a graphical image annotation tool and using this tool a user can also train and test large satellite images. User can create small patches from a large image, annotate it, create training and testing data, select model, train-test the model. The annotations (labeling) part of this application is based
 on `this repository <https://github.com/tzutalin/labelImg>`__.
