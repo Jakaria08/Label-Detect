@@ -75,6 +75,16 @@ Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
     pyrcc5 -o resources.py resources.qrc
     python labelImg.py
 
+Tensorflow Object Detection API
+-------------------------------
+
+1. Tensoflow object detection api is used only for training purpose. By using this api we can use different types of models to train. I am also integrating models that are not in the api.
+2. Ubuntu:
+3. Windows: Download `Git Bash, <https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe>`_ go to the C: drive of your computer, create a folder named 'tensorflow' and go into the folder. Now open git bash and enter the follwoing commands:
+
+.. code::
+
+    git clone https://github.com/tensorflow/models.git
 
 Usage
 -----
@@ -95,9 +105,19 @@ The annotation will be saved to the folder you specify.
 
 You can refer to the below hotkeys to speed up your workflow.
 
-Steps (Training)
+Training
+----------
+Steps 
 ~~~~~
 
+1.
+
+Testing
+----------
+Steps 
+~~~~~
+
+1.
 
 
 Hotkeys
