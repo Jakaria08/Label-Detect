@@ -110,7 +110,7 @@ Steps
 8. Select 'Start Training' [Ctrl+Shift+t] 
 9. Select the TFRecord file for training which is 'train.record' 
 10. Select 'detection.pbtxt' and a .config file from 'Label-Detect/Training_config' directory. If you want to use Faster R-CNN ResNet-101 then select the corresponding file otherwise you can select the .config file for SSD MobileNet.
-11. Downdload the `Faster R-CNN Resnet-101 model,  <http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz>`_ extract it and select the 'model.ckpt.index' file for the model file. You can also use `_SSD MobileNet <http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz>`_
+11. Downdload the `Faster R-CNN Resnet-101 model,  <http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz>`_ extract it and select the 'model.ckpt.index' file for the model file. You can also use `SSD MobileNet <http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz>`_
 12. If you want to use other models you can download from `here <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>`_ and the corresponding .config files from 'tensorflow/models/research/object_detection/samples/configs' or `here <https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs>`_ 
 
 Testing
