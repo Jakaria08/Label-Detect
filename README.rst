@@ -64,6 +64,8 @@ Download and install `Anaconda <https://www.anaconda.com/download/#download>`__ 
 
 `Install Tensorflow with GPU support <https://www.anaconda.com/tensorflow-in-anaconda/>`_
 
+`Hardware Requirements <https://www.tensorflow.org/install/gpu#windows_setup>`_
+
 Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
 
 .. code::
