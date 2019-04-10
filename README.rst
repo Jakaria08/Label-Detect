@@ -1,12 +1,6 @@
 Label-Detection
 ======================
 
-.. image:: https://img.shields.io/pypi/v/labelimg.svg
-        :target: https://pypi.python.org/pypi/labelimg
-
-.. image:: https://img.shields.io/travis/tzutalin/labelImg.svg
-        :target: https://travis-ci.org/tzutalin/labelImg
-
 Label-Detection  is a graphical image annotation tool and using this tool user can also train and test large satellite images. User can create small patches from large image, annotate it, create training and testing data, select model, train-test the model. The annotations (labeling) part of this application is based
 on `this repository <https://github.com/tzutalin/labelImg>`__.
 
@@ -24,7 +18,7 @@ We can see a example of image labeling and detection in the following images. Sa
 .. image:: https://user-images.githubusercontent.com/7825643/55766217-e1848800-5a30-11e9-808d-dcfbf64ff387.png
      :alt: Demo Image
 
-`Watch a demo video <https://youtu.be/FFe5Y7u7APs>`__ [Labeling]
+`Watch a demo video <https://youtu.be/FFe5Y7u7APs>`__ [Labeling] [Created by tzutalin]
 
 `Watch a demo video <https://youtu.be/WNz9Djt9ETc>`__ [Training Part-1]
 
@@ -106,7 +100,18 @@ Training
 Steps 
 ~~~~~
 
-1.
+1. Select 'File -> Open Image and Slice' [Ctrl+i] 
+2. Select the desired Satellite Image and then can enter the slice/patch height and width. The default value is 512 pixels.
+3. Then select 'Start Slicing'
+4. After Slicing the big image, you can see a new directory on the image's directory and within it you can see image slices/patches.
+5. Annotate the images and save the .xml files according to the 'Annotation' section discussed above.
+6. Select 'File -> Select Directory to Create TFrecords' [Ctrl+t] and select the directory that contains all the .xml files.
+7. Then TFRecords files for training and testing will be created under TFrecords folder withing the directory selected in step 6.
+8. Select 'Start Training' [Ctrl+Shift+t] 
+9. Select the TFRecord file for training which is 'train.record' 
+10. Select 'detection.pbtxt' and a config file from 'Label-Detect/Training_config' directory. If you want to use Faster R-CNN
+ResNet-101 then select the corresponding file otherwise you can select the config file for SSD MobileNet.
+11. Downdload the `Faster R-CNN Resnet-101 model,  <http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz>`_ extract it and select the 'model.ckpt.index' file for the model file.  
 
 Testing
 ----------
