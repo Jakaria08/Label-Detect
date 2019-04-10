@@ -42,10 +42,12 @@ Linux/Ubuntu requires at least `Python
 3.6 <https://www.python.org/getit/>`__ and has been tested with `PyQt
 5.8 <https://www.riverbankcomputing.com/software/pyqt/intro>`__.
 
-`Install Tensorflow with GPU support <https://medium.com/@naomi.fridman/install-conda-tensorflow-gpu-and-keras-on-ubuntu-18-04-1b403e740e25>`_
-
 Ubuntu Linux
 ^^^^^^^^^^^^
+
+`Install Tensorflow with GPU support <https://medium.com/@naomi.fridman/install-conda-tensorflow-gpu-and-keras-on-ubuntu-18-04-1b403e740e25>`_
+
+`Install Tensorflow with GPU support <https://www.tensorflow.org/install/gpu>`_ [Tensorflow Documentation]
 
 .. code::
 
@@ -59,6 +61,8 @@ Windows + Anaconda
 ^^^^^^^
 
 Download and install `Anaconda <https://www.anaconda.com/download/#download>`__ (Python 3.6+)
+
+`Install Tensorflow with GPU support <https://www.anaconda.com/tensorflow-in-anaconda/>`_
 
 Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
 
