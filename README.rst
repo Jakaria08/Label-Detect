@@ -70,7 +70,8 @@ Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
 
 .. code::
 
-    conda install pyqt=5
+    conda install pip
+    pip install -r requirements/requirements-linux-python3.txt
     pyrcc5 -o resources.py resources.qrc
     python labelImg.py
 
