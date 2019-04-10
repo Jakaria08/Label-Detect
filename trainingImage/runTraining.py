@@ -53,7 +53,7 @@ class Trainer:
 
         head1, tail1 = os.path.split(self.pre_model_training)
         new_model_path = os.path.join(head1,'model.ckpt')
-        """
+
         with in_place.InPlace(self.config_file) as file:
             for line in file:
                 if 'PATH_TO_BE_CONFIGURED_MODEL' in line:
@@ -65,7 +65,7 @@ class Trainer:
                 else:
                     line = line.replace('PATH_TO_BE_CONFIGURED_PBTXT', self.pbtxt_training)
                 file.write(line)
-        """
+
         train_dir = os.path.join(head,'Training_Folder')
 
         if os.path.exists(train_dir):
@@ -74,7 +74,7 @@ class Trainer:
             os.mkdir(train_dir)
 
         current_dir = os.getcwd()
-        top_dir_wind = os.path.join(*(current_dir.split(os.path.sep)[1:2]))
+        top_dir_wind = os.path.join(*(current_dir.split(os.path.sep)[1:4]))
         top_dir_win = os.path.join('/',top_dir_wind)
         top_dir_linuxx = os.path.join(*(current_dir.split(os.path.sep)[1:3]))
         top_dir_linux = os.path.join('/',top_dir_linuxx)
