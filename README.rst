@@ -1,7 +1,7 @@
 Label-Detection
 ======================
 
-Label-Detection  is a graphical image annotation tool and using this tool user can also train and test large satellite images. User can create small patches from large image, annotate it, create training and testing data, select model, train-test the model. The annotations (labeling) part of this application is based
+Label-Detection  is a graphical image annotation tool and using this tool a user can also train and test large satellite images. User can create small patches from a large image, annotate it, create training and testing data, select model, train-test the model. The annotations (labeling) part of this application is based
 on `this repository <https://github.com/tzutalin/labelImg>`__.
 
 It is written in Python and uses Qt for its graphical interface.
@@ -9,9 +9,9 @@ It is written in Python and uses Qt for its graphical interface.
 Annotations are saved as XML files in PASCAL VOC format, the format used
 by `ImageNet <http://www.image-net.org/>`__.  
 
-User can use many deep learning models such as Faster RCNN Resnet or SSD Mobilenet.
+Users can use many deep learning models such as Faster RCNN Resnet or SSD Mobilenet.
 
-We can see a example of image labeling and detection in the following images. Sample Labeling, Traing and Testing procedures can be found in the videos that are posted below the images.
+We can see an example of image labeling and detection in the following images. Sample Labeling, Training and Testing procedures can be found in the videos that are posted below the images.
 
 .. image:: https://user-images.githubusercontent.com/7825643/55756403-af622e80-5a0e-11e9-81fd-873b54cae6d9.png
      :alt: Demo Image
