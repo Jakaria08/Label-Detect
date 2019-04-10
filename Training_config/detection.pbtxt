@@ -1,0 +1,15 @@
+item {
+  id: 1
+  name: 'empty_site'
+}
+
+item {
+  id: 2
+  name: 'single_tank'
+}
+
+item {
+  id: 3
+  name: 'multiple_tank'
+}
+
