@@ -103,14 +103,14 @@ Steps
 1. Select 'File -> Open Image and Slice' [Ctrl+i] 
 2. Select the desired Satellite Image and then can enter the slice/patch height and width. The default value is 512 pixels.
 3. Then select 'Start Slicing'
-4. After Slicing the big image, you can see a new directory on the image's directory and within it you can see image slices/patches.
+4. After Slicing the big image, you can see a new directory on the image's directory and within it, you can see image slices/patches.
 5. Annotate the images and save the .xml files according to the 'Annotation' section discussed above.
 6. Select 'File -> Select Directory to Create TFrecords' [Ctrl+t] and select the directory that contains all the .xml files.
-7. Then TFRecords files for training and testing will be created under TFrecords folder withing the directory selected in step 6.
+7. Then TFRecords files for training and testing will be created under TFrecords folder within the directory selected in step 6.
 8. Select 'Start Training' [Ctrl+Shift+t] 
 9. Select the TFRecord file for training which is 'train.record' 
 10. Select 'detection.pbtxt' and a .config file from 'Label-Detect/Training_config' directory. If you want to use Faster R-CNN ResNet-101 then select the corresponding file otherwise you can select the .config file for SSD MobileNet.
-11. Downdload the `Faster R-CNN Resnet-101 model,  <http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz>`_ extract it and select the 'model.ckpt.index' file for the model file. You can also use `SSD MobileNet <http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz>`_
+11. Download the `Faster R-CNN Resnet-101 model,  <http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz>`_ extract it and select the 'model.ckpt.index' file for the model file. You can also use `SSD MobileNet <http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz>`_
 12. If you want to use other models you can download from `here <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>`_ and the corresponding .config files from 'tensorflow/models/research/object_detection/samples/configs' or `here <https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs>`_ 
 13. Then you can start training and after the completion of the training you will get 'frozen_inference_graph.pb' file and this file will be used for testing images.
 
