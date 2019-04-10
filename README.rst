@@ -7,7 +7,8 @@ Label-Detection
 .. image:: https://img.shields.io/travis/tzutalin/labelImg.svg
         :target: https://travis-ci.org/tzutalin/labelImg
 
-Label-Detection  is a graphical image annotation tool and using this tool user can also train and test large satellite images. User can create small patches from large image, annotate it, create training and testing data, select model, train-test the model.
+Label-Detection  is a graphical image annotation tool and using this tool user can also train and test large satellite images. User can create small patches from large image, annotate it, create training and testing data, select model, train-test the model. The annotations (labeling) part of this application is based
+on `this repository <https://github.com/tzutalin/labelImg>`__.
 
 It is written in Python and uses Qt for its graphical interface.
 
