@@ -79,12 +79,8 @@ Tensorflow Object Detection API
 -------------------------------
 
 1. Tensoflow object detection api is used only for training purpose. By using this api we can use different types of models to train. I am also integrating models that are not in the api.
-2. Ubuntu:
-3. Windows: Download `Git Bash, <https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe>`_ go to the C: drive of your computer, create a folder named 'tensorflow' and go into the folder. Now open git bash and enter the follwoing commands:
-
-.. code::
-
-    git clone https://github.com/tensorflow/models.git
+2. Ubuntu: Go to the /home/your-username/ and create a folder named 'tensorflow' and go into the folder. Now download or clone `this repository <https://github.com/tensorflow/models>`_ and follow `_this installation process <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md>`_.
+3. Windows: Download `Git Bash, <https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe>`_ go to the C:/Users/your-username/ folder of your computer, create a folder named 'tensorflow' and go into the folder. Now follow this `tutorial <https://medium.com/@marklabinski/installing-tensorflow-object-detection-api-on-windows-10-7a4eb83e1e7b>`_ or `this tutorial <https://basecodeit.com/blog/installing-tensorflow-with-object-detection-api-part-1/>`_
 
 Usage
 -----
