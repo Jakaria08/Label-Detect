@@ -122,7 +122,7 @@ Steps
 1. Select 'File -> Load Test Image to Get the Results'
 2. For testing large images, the images must be sliced into small overlapping patches for detection. Therefore, enter the height and width of the slices. The default size is 512 for height and width.
 3. Then select the 'frozen_inference_graph.pb' file that is created on the training phase.
-4. Then after some processing time, (slicing, detection of objects, convert local coordinats of bounding box of small images to global coordinate of the big image and use non-max suppression to the overlapped detection) the final labeled image with bounding boxes will be uploaded.
+4. Then after some processing time, (slicing, detection of objects, convert local coordinates of the bounding box of small images to the global coordinate of the big image and use non-max suppression to the overlapped detection) the final labeled image with bounding boxes will be uploaded.
 
 
 Hotkeys
