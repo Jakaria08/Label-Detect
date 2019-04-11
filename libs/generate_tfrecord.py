@@ -21,6 +21,7 @@ id = []
 name = []
 
 def read_pbtxt():
+    global id, name
     current_dir = os.getcwd()
     print(current_dir)
     new_file = os.path.join(current_dir,'Training_config','detection.pbtxt')
