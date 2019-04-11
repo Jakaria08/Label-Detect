@@ -16,14 +16,15 @@ from string import punctuation
 #flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
 #flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 #FLAGS = flags.FLAGS
+
+id = []
+name = []
+
 def read_pbtxt():
     current_dir = os.getcwd()
     print(current_dir)
     new_file = os.path.join(current_dir,'Training_config','detection.pbtxt')
     print(new_file)
-
-    id = []
-    name = []
 
     infile = open(new_file,'r')
     filecontent = infile.readlines()
