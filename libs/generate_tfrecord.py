@@ -16,33 +16,33 @@ from string import punctuation
 #flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
 #flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 #FLAGS = flags.FLAGS
+def read_pbtxt():
+    current_dir = os.getcwd()
+    print(current_dir)
+    new_file = os.path.join(current_dir,'Training_config','detection.pbtxt')
+    print(new_file)
 
-current_dir = os.getcwd()
-print(current_dir)
-new_file = os.path.join(current_dir,'Training_config','detection.pbtxt')
-print(new_file)
+    id = []
+    name = []
 
-id = []
-name = []
+    infile = open(new_file,'r')
+    filecontent = infile.readlines()
+    infile.close()
 
-infile = open(new_file,'r')
-filecontent = infile.readlines()
-infile.close()
+    for line in filecontent:
+        if 'id' in line:
+            tmp = line.strip().split(':')
+            id.append(tmp[1].strip())
+        elif 'name' in line:
+            tmp = line.strip().split(':')
+            name.append(tmp[1].strip().strip(punctuation))
+        else:
+            continue
 
-for line in filecontent:
-    if 'id' in line:
-        tmp = line.strip().split(':')
-        id.append(tmp[1].strip())
-    elif 'name' in line:
-        tmp = line.strip().split(':')
-        name.append(tmp[1].strip().strip(punctuation))
-    else:
-        continue
+    id = [int(i) for i in id]
 
-id = [int(i) for i in id]
-
-print(id)
-print(name)
+    print(id)
+    print(name)
 
 # TO-DO replace this with label map
 def class_text_to_int(row_label):
@@ -128,6 +128,7 @@ def create_tf_example(group, path):
 
 
 def main_Tf(target_path, record_file, images_csv):
+    read_pbtxt()
     print(target_path)
     writer = tf.python_io.TFRecordWriter(os.path.join(target_path, 'TFrecords', record_file))
 
