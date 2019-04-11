@@ -19,8 +19,7 @@ from string import punctuation
 
 current_dir = os.getcwd()
 print(current_dir)
-head, tail = os.path.split(current_dir)
-new_file = os.path.join(head,'Training_config','detection.pbtxt')
+new_file = os.path.join(current_dir,'Training_config','detection.pbtxt')
 print(new_file)
 
 id = []
