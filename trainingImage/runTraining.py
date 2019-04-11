@@ -1,6 +1,7 @@
 import os
 import glob
 import in_place
+import shutil
 from pathlib import Path
 from sys import platform as _platform
 
@@ -88,6 +89,13 @@ class Trainer:
             path = os.path.join(top_dir_win,'tensorflow/models/research/object_detection')
         else:
             print('Not supported!')
+
+
+        copy_file_path_train = os.path.join(path,'legacy','train.py')
+        copy_file_path_test = os.path.join(path,'legacy','eval.py')
+
+        shutil.copy2(copy_file_path_train, path)
+        shutil.copy2(copy_file_path_test, path)
 
         os.chdir(path)
 
