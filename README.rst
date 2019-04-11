@@ -115,6 +115,7 @@ Steps
 12. If you want to use other models you can download from `here <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>`_ and the corresponding .config files from 'tensorflow/models/research/object_detection/samples/configs' or `here <https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs>`_ 
 13. Then you can start training and after the completion of the training you will get 'frozen_inference_graph.pb' file and this file will be used for testing images.
 14. Here, the training is for three labels which are in 'detection.pbtxt' file. If you want to create your own labels then just edit the detection.pbtxt file. Give an item id starting from value 1 and give it a name. The format must be same as the given 'detectin.pbtxt' file.
+15. In the config file that are provided in the repository in 'Label-Detect/Training_config', you can find "num_steps: 20000". This is the number of training steps. You can change the steps as your wish.
 
 Testing
 ----------
