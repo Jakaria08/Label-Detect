@@ -60,7 +60,7 @@ Download and install `Anaconda <https://www.anaconda.com/download/#download>`__ 
 
 `Hardware Requirements <https://www.tensorflow.org/install/gpu#windows_setup>`_
 
-Open the Anaconda Prompt and go to the `labelImg <#labelimg>`__ directory
+Open the Anaconda Prompt and go to the `label-Detect <#labe-Detect>`__ directory
 
 .. code::
 
