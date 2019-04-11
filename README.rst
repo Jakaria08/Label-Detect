@@ -35,6 +35,7 @@ Build from source
 Linux/Ubuntu requires at least `Python
 3.6 <https://www.python.org/getit/>`__ and has been tested with `PyQt
 5.8 <https://www.riverbankcomputing.com/software/pyqt/intro>`__.
+Download or clone the Label-Detect repository and then run the following commands (Ubuntu/Windows) within the Label-Detect directory.
 
 Ubuntu Linux
 ^^^^^^^^^^^^
@@ -60,7 +61,7 @@ Download and install `Anaconda <https://www.anaconda.com/download/#download>`__ 
 
 `Hardware Requirements <https://www.tensorflow.org/install/gpu#windows_setup>`_
 
-Open the Anaconda Prompt and go to the `label-Detect <#labe-Detect>`__ directory
+Open the Anaconda Prompt and go to the Labe-Detect directory
 
 .. code::
 
