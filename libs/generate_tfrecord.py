@@ -10,15 +10,57 @@ import tensorflow as tf
 from PIL import Image
 import libs.dataset_util as dataset_util
 from collections import namedtuple, OrderedDict
+from string import punctuation
 
 #flags = tf.app.flags
 #flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
 #flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 #FLAGS = flags.FLAGS
 
+current_dir = os.getcwd()
+print(current_dir)
+head, tail = os.path.split(current_dir)
+new_file = os.path.join(head,'Training_config','detection.pbtxt')
+print(new_file)
+
+id = []
+name = []
+
+infile = open(new_file,'r')
+filecontent = infile.readlines()
+infile.close()
+
+for line in filecontent:
+    if 'id' in line:
+        tmp = line.strip().split(':')
+        id.append(tmp[1].strip())
+    elif 'name' in line:
+        tmp = line.strip().split(':')
+        name.append(tmp[1].strip().strip(punctuation))
+    else:
+        continue
+
+id = [int(i) for i in id]
+
+print(id)
+print(name)
 
 # TO-DO replace this with label map
 def class_text_to_int(row_label):
+    for ids, item in zip(id,name):
+        if item == row_label:
+            return ids
+        else:
+            None
+
+def class_int_to_text(label):
+    for ids, item in zip(id,name):
+        if ids == label:
+            return item
+        else:
+            None
+
+def class_text_to_int_old(row_label):
     if row_label == 'empty_site':
         return 1
     elif row_label == 'single_tank':
@@ -28,7 +70,7 @@ def class_text_to_int(row_label):
     else:
         None
 
-def class_int_to_text(label):
+def class_int_to_text_old(label):
     if label == 1:
         return 'empty_site'
     elif label == 2:
